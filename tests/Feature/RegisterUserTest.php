@@ -13,12 +13,13 @@ class RegisterUserTest extends TestCase
     /** @test */
     public function a_guest_can_register_to_the_app()
     {
+        $this->withoutExceptionhandling();
         $user = [
             "username" => "Allen",
             "email"    => "alanaliagadev@example.test",
             "password" => "supersecret",
         ];
-        
+
         $this->json('POST', '/api/register', $user)
             ->assertStatus(201);
     

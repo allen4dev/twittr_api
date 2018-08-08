@@ -2,4 +2,4 @@
 
 use Illuminate\Http\Request;
 
-Route::post('/register', 'AuthController@store');
+Route::post('/register', 'AuthController@register');
