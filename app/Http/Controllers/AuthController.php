@@ -27,4 +27,20 @@ class AuthController extends Controller
             $statusCode
         );
     }
+
+    public function login()
+    {
+        request()->validate([
+            "email"    => "required|email",
+            "password" => "required",
+        ]);
+
+        $credentials = request()->only([ 'email', 'password' ]);
+
+        if (! $token = JWTAuth::attempt($credentials)) {
+            return Responses::format(null, 400, [ "message" => "Invalid credentials" ]);
+        }
+
+        return Responses::format(compact('token'), 200);
+    }
 }
