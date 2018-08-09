@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Responses;
+use App\Http\Resources\UserResource;
 
 class ProfileController extends Controller
 {
@@ -12,7 +12,6 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
 
-        // ! Refactor to API resources
-        return Responses::format(compact('user'));
+        return new UserResource($user);
     }
 }

@@ -22,9 +22,11 @@ class AuthTest extends TestCase
             "password" => "supersecret",
         ];
 
-        $response = $this->json('POST', '/api/auth/register', $user)->assertStatus(201);
+        $this->json('POST', '/api/auth/register', $user)
+            ->assertJsonStructure([ 'data' => [ 'token' ]])
+            ->assertStatus(201);
     
-        $this->assertTrue(array_key_exists('token', $response->original['data']));
+        // $this->assertTrue(array_key_exists('token', $response->original['data']));
 
         $this->assertDatabaseHas('users', [
             "username" => $user['username'],
@@ -43,11 +45,13 @@ class AuthTest extends TestCase
 
         $this->json('POST', '/api/auth/register', $credentials);
 
-        $response = $this->json('POST', '/api/auth/login', [
+        $this->json('POST', '/api/auth/login', [
             "email" => $credentials['email'],
             "password" => $credentials['password'],
-        ])->assertStatus(200);
+        ])
+            ->assertJsonStructure([ 'data' => [ 'token' ]])            
+            ->assertStatus(200);
 
-        $this->assertTrue(array_key_exists('token', $response->original['data']));
+        // $this->assertTrue(array_key_exists('token', $response->original['data']));
     }
 }
