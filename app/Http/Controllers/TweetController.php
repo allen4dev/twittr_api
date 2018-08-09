@@ -23,4 +23,13 @@ class TweetController extends Controller
 
         return new TweetResource($tweet);
     }
+
+    public function update(Tweet $tweet)
+    {
+        request()->validate([ 'body' => 'string' ]);
+
+        $tweet->update([ 'body' => request('body') ]);
+
+        return new TweetResource($tweet);
+    }
 }
