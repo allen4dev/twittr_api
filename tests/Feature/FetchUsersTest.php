@@ -17,7 +17,7 @@ class FetchUsersTest extends TestCase
     {
         $user = create(User::class);
 
-        $this->json('GET', "/api/users/{$user->id}")
+        $this->json('GET', $user->path())
             ->assertJson([ 'data' => $user->toArray() ])
             ->assertStatus(200);
     }

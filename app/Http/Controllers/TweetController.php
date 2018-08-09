@@ -10,6 +10,11 @@ use App\Tweet;
 
 class TweetController extends Controller
 {
+    public function show(Tweet $tweet)
+    {
+        return new TweetResource($tweet);
+    }
+
     public function store(Request $request)
     {
         $request->validate([ 'body' => 'required' ]);

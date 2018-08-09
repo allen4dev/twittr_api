@@ -45,7 +45,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function path()
     {
-        return '/users/' . $this->id;
+        return '/api/users/' . $this->id;
     }
 
     public function tweets()

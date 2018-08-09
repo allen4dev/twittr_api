@@ -17,7 +17,7 @@ class UserTest extends TestCase
     {
         $user = create(User::class);
 
-        $this->assertEquals("/users/{$user->id}", $user->path());
+        $this->assertEquals("/api/users/{$user->id}", $user->path());
     }
 
     /** @test */
