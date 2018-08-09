@@ -12,6 +12,13 @@ class UpdateTweetsTest extends TestCase
 {
     use RefreshDatabase;
 
+    /** @test  */
+    public function guests_cannot_update_tweets()
+    {
+        $this->json('PATCH', '/api/tweets/1', [])
+            ->assertStatus(401);
+    }
+
     /** @test */
     public function a_user_can_update_his_tweet()
     {

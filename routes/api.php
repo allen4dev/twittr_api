@@ -19,7 +19,7 @@ Route::prefix('users')->group(function () {
 Route::prefix('tweets')->group(function () {
   Route::post('/', 'TweetController@store')->middleware('auth:api');
   Route::get('/{tweet}', 'TweetController@show');
-  Route::patch('/{tweet}', 'TweetController@update');
+  Route::patch('/{tweet}', 'TweetController@update')->middleware('auth:api');
 
   Route::get('/{tweet}/replies', 'ReplyController@index');
   Route::post('/{tweet}/replies', 'ReplyController@store')->middleware('auth:api');
