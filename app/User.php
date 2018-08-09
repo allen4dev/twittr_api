@@ -42,4 +42,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public function path()
+    {
+        return '/users/' . $this->id;
+    }
 }
