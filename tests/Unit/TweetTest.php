@@ -19,4 +19,15 @@ class TweetTest extends TestCase
 
         $this->assertEquals("/api/tweets/{$tweet->id}", $tweet->path());
     }
+
+    /** @test */
+    public function a_tweet_has_many_replies()
+    {
+        $tweet = create(Tweet::class);        
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Collection',
+            $tweet->replies
+        );
+    }
 }
