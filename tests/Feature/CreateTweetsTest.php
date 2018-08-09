@@ -12,7 +12,14 @@ class CreateTweetsTest extends TestCase
 {
     use RefreshDatabase;
 
-    // ToDo: handle the failure token in the render
+    // ToDo: Handle the token missmatch in the render
+    /** @test */
+    public function guests_cannot_create_tweets()
+    {
+        $this->json('POST', '/api/tweets', [])
+            ->assertStatus(401);
+    }
+
     /** @test */
     public function a_registered_user_can_create_tweets_if_a_valid_token_is_supplied()
     {

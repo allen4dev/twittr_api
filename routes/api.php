@@ -17,6 +17,6 @@ Route::prefix('users')->group(function () {
 
 Route::prefix('tweets')->group(function () {
 
-  Route::post('/', 'TweetController@store');
+  Route::post('/', 'TweetController@store')->middleware('auth:api');
 
 });
