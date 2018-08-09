@@ -19,4 +19,15 @@ class UserTest extends TestCase
 
         $this->assertEquals("/users/{$user->id}", $user->path());
     }
+
+    /** @test */
+    public function a_user_has_many_tweets()
+    {
+        $user = create(User::class);
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Collection',
+            $user->tweets
+        );
+    }
 }

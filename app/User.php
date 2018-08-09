@@ -47,4 +47,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return '/users/' . $this->id;
     }
+
+    public function tweets()
+    {
+        return $this->hasMany(Tweet::class);
+    }
+
+    public function publishTweet($request)
+    {
+        return $this->tweets()->create([ 'body' => $request->body ]);
+    }
 }

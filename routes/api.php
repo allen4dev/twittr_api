@@ -10,5 +10,13 @@ Route::prefix('auth')->group(function () {
 Route::get('/me', 'ProfileController@show')->middleware('auth:api');
 
 Route::prefix('users')->group(function () {
+  
   Route::get('/{user}', 'UserController@show');
+
+});
+
+Route::prefix('tweets')->group(function () {
+
+  Route::post('/', 'TweetController@store');
+
 });
