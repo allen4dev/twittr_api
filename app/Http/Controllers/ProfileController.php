@@ -4,20 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use JWTAuth;
+use App\Http\Responses;
 
 class ProfileController extends Controller
 {
     public function show()
     {
-        // $user = auth()->user();
-        $token = request()->header('Authorization');
+        $user = auth()->user();
 
-        // dd($token);
-        dd(JWTAuth::toUser($token));
-
-        return response()->json([
-            'data' => [$user]
-        ]);
+        // ! Refactor to API resources
+        return Responses::format(compact('user'));
     }
 }

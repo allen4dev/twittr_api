@@ -12,32 +12,22 @@ class FetchUsersTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp()
+    /** @test */
+    public function a_registered_user_can_retrieve_his_information_if_sends_a_valid_token()
     {
-        parent::setUp();
-
-        $credentials = [
+        $response = $this->post('/api/auth/register', [
             'username' => 'Allen',
             'email'    => 'allen@example.test',
             'password' => 'secret',
-        ];
+        ]);
 
-        $response = $this->json('POST', '/api/register', $credentials);
+        $token = $response->original['data']['token'];
 
-        $this->credentials = $credentials;
-        $this->token = $response->original['data']['token'];
-    }
-
-    /** @test */
-    public function a_registered_user_can_retrieve_his_information()
-    {
-        $this->withoutExceptionHandling();
-
-        $token = $this->token;
-
-        $this->json('GET', '/api/me', [], ['HTTP_Authorization' => $token])
+        $this->json('GET', '/api/me', [], ['Authorization' => 'Bearer ' . $token])
             ->assertJson([
-                'data' => User::first()->toArray()
-            ]);
+                'data' => [ 'user' => auth()->user()->toArray() ],
+                'meta' => [ 'status' => [ 'code' => 200 ]]
+            ])
+            ->assertStatus(200);
     }
 }

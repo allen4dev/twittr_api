@@ -6,8 +6,6 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use JWTAuth;
-
 use App\User;
 
 class AuthTest extends TestCase
@@ -17,13 +15,14 @@ class AuthTest extends TestCase
     /** @test */
     public function a_guest_can_register_to_the_app()
     {
+        $this->withoutExceptionHandling();
         $user = [
             "username" => "Allen",
             "email"    => "allen@example.test",
             "password" => "supersecret",
         ];
 
-        $response = $this->json('POST', '/api/register', $user)->assertStatus(201);
+        $response = $this->json('POST', '/api/auth/register', $user)->assertStatus(201);
     
         $this->assertTrue(array_key_exists('token', $response->original['data']));
 
@@ -42,9 +41,9 @@ class AuthTest extends TestCase
             'password' => 'secret',
         ];
 
-        $this->json('POST', '/api/register', $credentials);
+        $this->json('POST', '/api/auth/register', $credentials);
 
-        $response = $this->json('POST', '/api/login', [
+        $response = $this->json('POST', '/api/auth/login', [
             "email" => $credentials['email'],
             "password" => $credentials['password'],
         ])->assertStatus(200);
