@@ -13,6 +13,13 @@ class ReplyTweetsTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function guests_cannot_reply_a_tweet()
+    {
+        $this->json('POST', '/api/tweets/1/replies', [])
+            ->assertStatus(401);
+    }
+    
+    /** @test */
     public function a_user_can_reply_a_tweet_if_a_valid_token_is_supplied()
     {
         $token = $this->signin();

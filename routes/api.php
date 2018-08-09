@@ -20,5 +20,5 @@ Route::prefix('tweets')->group(function () {
   Route::get('/{tweet}', 'TweetController@show');
   Route::post('/', 'TweetController@store')->middleware('auth:api');
 
-  Route::post('/{tweet}/replies', 'ReplyController@store');
+  Route::post('/{tweet}/replies', 'ReplyController@store')->middleware('auth:api');
 });
