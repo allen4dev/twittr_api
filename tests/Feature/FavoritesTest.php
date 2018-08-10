@@ -28,11 +28,32 @@ class FavoritesTest extends TestCase
 
         $headers = [ 'Authorization' => 'Bearer ' . $token ];
 
-        $this->json('POST', $tweet->path() . '/favorite', $headers)
+        $this->json('POST', $tweet->path() . '/favorite', [], $headers)
             ->assertJson([ 'data' => $tweet->toArray() ])
             ->assertStatus(200);
 
         $this->assertDatabaseHas('favorites', [
+            'user_id'  => auth()->id(),
+            'favorited_id' => $tweet->id,
+        ]);
+    }
+
+    /** @test */
+    public function a_user_can_unfavorite_a_tweet()
+    {
+        $token = $this->signin();
+
+        $tweet = create(Tweet::class);
+
+        $headers = [ 'Authorization' => 'Bearer ' . $token ];
+
+        $this->json('POST', $tweet->path() . '/favorite', [], $headers);
+
+        $this->json('DELETE', $tweet->path() . '/unfavorite', [], $headers)
+            ->assertJson([ 'data' => $tweet->toArray() ])
+            ->assertStatus(200);
+
+        $this->assertDatabaseMissing('favorites', [
             'user_id'  => auth()->id(),
             'favorited_id' => $tweet->id,
         ]);

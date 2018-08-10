@@ -27,4 +27,5 @@ Route::prefix('tweets')->group(function () {
   Route::post('/{tweet}/replies', 'ReplyController@store')->middleware('auth:api');
 
   Route::post('/{tweet}/favorite', 'FavoriteController@store')->middleware('auth:api');
+  Route::delete('/{tweet}/unfavorite', 'FavoriteController@destroy')->middleware('auth:api');
 });

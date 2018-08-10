@@ -33,9 +33,18 @@ class Tweet extends Model
 
     public function favorite()
     {
-        $this->favorites()->create([
-            'user_id' => auth()->id(),
-        ]);
+        $attributes = [ 'user_id' => auth()->id() ];
+
+        $this->favorites()->create($attributes);
+
+        return $this;
+    }
+
+    public function unfavorite()
+    {
+        $attributes = [ 'user_id' => auth()->id() ];
+
+        $this->favorites()->where($attributes)->delete();
 
         return $this;
     }

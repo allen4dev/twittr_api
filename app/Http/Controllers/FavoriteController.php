@@ -16,4 +16,11 @@ class FavoriteController extends Controller
 
         return new TweetResource($tweet);
     }
+
+    public function destroy(Tweet $tweet)
+    {
+        $tweet->unfavorite();
+
+        return new TweetResource($tweet);
+    }
 }
