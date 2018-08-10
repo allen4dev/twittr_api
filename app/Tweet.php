@@ -35,7 +35,9 @@ class Tweet extends Model
     {
         $attributes = [ 'user_id' => auth()->id() ];
 
-        $this->favorites()->create($attributes);
+        if (! $this->isFavorited($attributes)) {
+            $this->favorites()->create($attributes);
+        }
 
         return $this;
     }
@@ -44,8 +46,15 @@ class Tweet extends Model
     {
         $attributes = [ 'user_id' => auth()->id() ];
 
-        $this->favorites()->where($attributes)->delete();
+        if ($this->isFavorited($attributes)) {
+            $this->favorites()->where($attributes)->delete();
+        }
 
         return $this;
+    }
+
+    public function isFavorited($attributes)
+    {
+        return $this->favorites()->where($attributes)->exists();
     }
 }

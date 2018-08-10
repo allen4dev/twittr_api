@@ -26,9 +26,7 @@ class FavoritesTest extends TestCase
 
         $tweet = create(Tweet::class);
 
-        $headers = [ 'Authorization' => 'Bearer ' . $token ];
-
-        $this->json('POST', $tweet->path() . '/favorite', [], $headers)
+        $this->favoriteTweet($tweet, $token)
             ->assertJson([ 'data' => $tweet->toArray() ])
             ->assertStatus(200);
 
@@ -36,6 +34,23 @@ class FavoritesTest extends TestCase
             'user_id'  => auth()->id(),
             'favorited_id' => $tweet->id,
         ]);
+    }
+
+    /** @test */
+    public function a_user_cannot_favorite_the_same_tweet_more_than_once()
+    {
+        $token = $this->signin();
+
+        $tweet = create(Tweet::class);
+
+        try {
+            $this->favoriteTweet($tweet, $token);
+            $this->favoriteTweet($tweet, $token);
+        } catch (Exception $e) {
+            $this->fail('You cannot favorite a tweet more than once.');
+        }
+
+        $this->assertCount(1, $tweet->favorites);
     }
 
     /** @test */
@@ -47,7 +62,7 @@ class FavoritesTest extends TestCase
 
         $headers = [ 'Authorization' => 'Bearer ' . $token ];
 
-        $this->json('POST', $tweet->path() . '/favorite', [], $headers);
+        $this->favoriteTweet($tweet, $token);
 
         $this->json('DELETE', $tweet->path() . '/unfavorite', [], $headers)
             ->assertJson([ 'data' => $tweet->toArray() ])
@@ -57,5 +72,12 @@ class FavoritesTest extends TestCase
             'user_id'  => auth()->id(),
             'favorited_id' => $tweet->id,
         ]);
+    }
+
+    public function favoriteTweet($tweet, $token)
+    {
+        $headers = [ 'Authorization' => 'Bearer ' . $token ];
+
+        return $this->json('POST', $tweet->path() . '/favorite', [], $headers);
     }
 }
