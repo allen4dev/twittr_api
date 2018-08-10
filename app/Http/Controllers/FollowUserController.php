@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+
+use App\Events\UserFollowed;
 
 use App\Http\Resources\UserResource;
 
@@ -13,17 +14,7 @@ class FollowUserController extends Controller
 {
     public function store(User $user)
     {
-        DB::table('followings')
-            ->insert([
-                'user_id'      => auth()->id(),
-                'following_id' => $user->id,
-            ]);
-
-        DB::table('followers')
-            ->insert([
-                'user_id'      => $user->id,
-                'follower_id' => auth()->id(),
-            ]);
+        event(new UserFollowed( auth()->user(), $user ));
     
         return new UserResource($user);
     }
