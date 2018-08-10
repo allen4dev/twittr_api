@@ -10,9 +10,7 @@ class ProfileFavoritesController extends Controller
 {
     public function index()
     {
-        $tweets = auth()->user()->favorites->each->favorited;
-
-        dd($tweets->toArray());
+        $tweets = auth()->user()->favorites->map->favorited;
 
         return TweetResource::collection($tweets);
     }

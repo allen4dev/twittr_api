@@ -42,25 +42,18 @@ class ProfileTest extends TestCase
     /** @test */
     public function a_user_can_fetch_his_favorites_if_sends_a_valid_token()
     {
-        $this->withoutExceptionHandling();
-        // Given we have an authenticated user
         $token = $this->signin();
         $headers = [ 'Authorization' => 'Bearer ' . $token ];
 
-        // two tweets favorited by the user and one not favorited by him
         $tweetsFavoritedByTheUser = create(Tweet::class, [], 2);
         $notFavoritedTweet = create(Tweet::class);
 
-        
         $tweetsFavoritedByTheUser->each(function ($tweet) use ($headers) {
             $this->favoriteTweet($tweet, $headers);
         });
         
-        // When he makes a GET request to /me/favorites
         $this->json('GET', '/api/me/favorites', [], $headers)
-        // Then he should receive a JSON only with the favorited tweets
             ->assertJson([ 'data' => $tweetsFavoritedByTheUser->toArray() ])
-        // anda 200 status code
             ->assertStatus(200);
     }
 
