@@ -53,6 +53,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Tweet::class);
     }
 
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
     public function publishTweet($request)
     {
         return $this->tweets()->create([ 'body' => $request->body ]);

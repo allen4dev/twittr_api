@@ -30,4 +30,15 @@ class UserTest extends TestCase
             $user->tweets
         );
     }
+
+    /** @test */
+    public function a_user_has_many_favorites()
+    {
+        $user = create(User::class);
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Collection',
+            $user->favorites
+        );
+    }
 }

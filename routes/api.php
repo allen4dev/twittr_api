@@ -10,6 +10,7 @@ Route::prefix('auth')->group(function () {
 Route::prefix('me')->group(function () {
   Route::get('/', 'ProfileController@show')->middleware('auth:api');
   Route::get('/tweets', 'ProfileController@index')->middleware('auth:api');
+  Route::get('/favorites', 'ProfileFavoritesController@index')->middleware('auth:api');
 });
 
 Route::prefix('users')->group(function () {
