@@ -32,7 +32,7 @@ class FollowUsersTest extends TestCase
 
         $this->assertDatabaseHas('followers', [
             'follower_id' => auth()->id(),
-            'leader_id'   => $userToFollow->id,
+            'following_id'   => $userToFollow->id,
         ]);
     }
 
@@ -71,7 +71,7 @@ class FollowUsersTest extends TestCase
 
         $this->assertDatabaseMissing('followers', [
             'follower_id' => auth()->id(),
-            'leader_id'   => $user->id,
+            'following_id'   => $user->id,
         ]);
     }
 
