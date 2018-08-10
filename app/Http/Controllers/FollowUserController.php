@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Events\UserFollowed;
 
 use App\Http\Resources\UserResource;
 
@@ -14,7 +13,7 @@ class FollowUserController extends Controller
 {
     public function store(User $user)
     {
-        event(new UserFollowed( auth()->user(), $user ));
+        $user->follow();
     
         return new UserResource($user);
     }

@@ -6,6 +6,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+use App\Events\UserFollowed;
+
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
@@ -71,5 +73,19 @@ class User extends Authenticatable implements JWTSubject
     public function publishTweet($request)
     {
         return $this->tweets()->create([ 'body' => $request->body ]);
+    }
+
+    public function follow()
+    {
+        $attributes = [ 'follower_id' => auth()->id() ];
+
+        if (! $this->isFollowed($attributes)) {
+            event(new UserFollowed( auth()->user(), $this ));
+        }
+    }
+
+    public function isFollowed($attributes)
+    {
+        return $this->followers()->where($attributes)->exists(); 
     }
 }
