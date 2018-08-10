@@ -84,6 +84,15 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
+    public function unfollow()
+    {
+        $attributes = [ 'follower_id' => auth()->id() ];
+
+        if ($this->isFollowed($attributes)) {
+            $this->followers()->detach(auth()->id());
+        }
+    }
+    
     public function isFollowed($attributes)
     {
         return $this->followers()->where($attributes)->exists(); 

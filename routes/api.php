@@ -18,6 +18,7 @@ Route::prefix('users')->group(function () {
   Route::get('/{user}/tweets', 'UserTweetsController@index');
   
   Route::post('/{user}/follow', 'FollowUserController@store')->middleware('auth:api');
+  Route::delete('/{user}/unfollow', 'FollowUserController@destroy')->middleware('auth:api');
 });
 
 Route::prefix('tweets')->group(function () {

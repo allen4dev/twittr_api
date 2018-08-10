@@ -56,6 +56,25 @@ class FollowUsersTest extends TestCase
         $this->assertCount(1, auth()->user()->followings);
     }
 
+    /** @test */
+    public function a_user_can_unfollow_other_users()
+    {
+        $token = $this->signin();
+
+        $user = create(User::class);
+
+        $this->followUser($user, $token);
+
+        $this->json('DELETE', $user->path() . '/unfollow')
+            ->assertJson([ 'data' => $user->toArray() ])
+            ->assertStatus(200);
+
+        $this->assertDatabaseMissing('followers', [
+            'follower_id' => auth()->id(),
+            'leader_id'   => $user->id,
+        ]);
+    }
+
     public function followUser($user, $token)
     {
         $headers = [ 'Authorization' => 'Bearer ' . $token ];
