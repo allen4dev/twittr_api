@@ -13,6 +13,11 @@ class Favorite extends Model
         'favorited_type'
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function favorited()
     {
         return $this->morphTo();
