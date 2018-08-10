@@ -30,24 +30,9 @@ class FollowUsersTest extends TestCase
             ->assertJson([ 'data' => $userToFollow->toArray() ])
             ->assertStatus(200);
 
-        $this->assertDatabaseHas('followings', [
-            'user_id'      => auth()->id(),
-            'following_id' => $userToFollow->id,
-        ]);
-    }
-
-    /** @test */
-    public function after_follow_a_user_a_record_also_should_be_added_in_the_followers_table()
-    {
-        $token = $this->signin();
-
-        $userToFollow = create(User::class);
-
-        $this->followUser($userToFollow, $token);
-
         $this->assertDatabaseHas('followers', [
-            'user_id'     => $userToFollow->id,
             'follower_id' => auth()->id(),
+            'leader_id'   => $userToFollow->id,
         ]);
     }
 

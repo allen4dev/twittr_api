@@ -60,14 +60,14 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Favorite::class);
     }
 
-    public function followings()
-    {
-        return $this->hasMany(Following::class);
-    }
-
     public function followers()
     {
-        return $this->hasMany(Follower::class);
+        return $this->belongsToMany(User::class, 'followers', 'leader_id', 'follower_id')->withTimestamps();
+    }
+
+    public function followings()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'leader_id')->withTimestamps();
     }
 
     public function publishTweet($request)
@@ -80,7 +80,7 @@ class User extends Authenticatable implements JWTSubject
         $attributes = [ 'follower_id' => auth()->id() ];
 
         if (! $this->isFollowed($attributes)) {
-            event(new UserFollowed( auth()->user(), $this ));
+            $this->followers()->attach(auth()->id());
         }
     }
 
