@@ -25,4 +25,6 @@ Route::prefix('tweets')->group(function () {
 
   Route::get('/{tweet}/replies', 'ReplyController@index');
   Route::post('/{tweet}/replies', 'ReplyController@store')->middleware('auth:api');
+
+  Route::post('/{tweet}/favorite', 'FavoriteController@store')->middleware('auth:api');
 });

@@ -13,6 +13,11 @@ class Tweet extends Model
         return $this->hasMany(Reply::class);
     }
 
+    public function favorites()
+    {
+        return $this->morphMany(Favorite::class, 'favorited');
+    }
+
     public function path()
     {
         return '/api/tweets/' . $this->id;
@@ -24,5 +29,14 @@ class Tweet extends Model
             'body' => $body,
             'user_id' => auth()->id(),
         ]);
+    }
+
+    public function favorite()
+    {
+        $this->favorites()->create([
+            'user_id' => auth()->id(),
+        ]);
+
+        return $this;
     }
 }
