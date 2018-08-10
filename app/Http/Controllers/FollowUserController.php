@@ -18,6 +18,12 @@ class FollowUserController extends Controller
                 'user_id'      => auth()->id(),
                 'following_id' => $user->id,
             ]);
+
+        DB::table('followers')
+            ->insert([
+                'user_id'      => $user->id,
+                'follower_id' => auth()->id(),
+            ]);
     
         return new UserResource($user);
     }

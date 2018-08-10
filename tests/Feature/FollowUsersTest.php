@@ -16,11 +16,10 @@ class FollowUsersTest extends TestCase
     public function a_user_can_follow_other_users()
     {
         $token = $this->signin();
+
         $userToFollow = create(User::class);
         
-        $headers = [ 'Authorization' => 'Bearer ' . $token ];
-
-        $this->json('POST', $userToFollow->path() . '/follow', [] , $headers)
+        $this->followUser($userToFollow, $token)
             ->assertJson([ 'data' => $userToFollow->toArray() ])
             ->assertStatus(200);
 
@@ -28,5 +27,27 @@ class FollowUsersTest extends TestCase
             'user_id'      => auth()->id(),
             'following_id' => $userToFollow->id,
         ]);
+    }
+
+    /** @test */
+    public function after_follow_a_user_a_record_also_should_be_added_in_the_followers_table()
+    {
+        $token = $this->signin();
+
+        $userToFollow = create(User::class);
+
+        $this->followUser($userToFollow, $token);
+
+        $this->assertDatabaseHas('followers', [
+            'user_id'     => $userToFollow->id,
+            'follower_id' => auth()->id(),
+        ]);
+    }
+
+    public function followUser($user, $token)
+    {
+        $headers = [ 'Authorization' => 'Bearer ' . $token ];
+
+        return $this->json('POST', $user->path() . '/follow', [] , $headers);
     }
 }
