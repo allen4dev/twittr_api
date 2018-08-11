@@ -5,9 +5,11 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Traits\RecordActivity;
+use App\Traits\Favoritable;
 
 class Tweet extends Model
 {
+    use Favoritable;
     use RecordActivity;
 
     protected $fillable = [ 'body', 'user_id' ];
@@ -28,37 +30,5 @@ class Tweet extends Model
             'body' => $body,
             'user_id' => auth()->id(),
         ]);
-    }
-
-    public function favorites()
-    {
-        return $this->morphMany(Favorite::class, 'favorited');
-    }
-
-    public function favorite()
-    {
-        $attributes = [ 'user_id' => auth()->id() ];
-
-        if (! $this->isFavorited($attributes)) {
-            $this->favorites()->create($attributes);
-        }
-
-        return $this;
-    }
-
-    public function unfavorite()
-    {
-        $attributes = [ 'user_id' => auth()->id() ];
-
-        if ($this->isFavorited($attributes)) {
-            $this->favorites()->where($attributes)->delete();
-        }
-
-        return $this;
-    }
-
-    public function isFavorited($attributes)
-    {
-        return $this->favorites()->where($attributes)->exists();
     }
 }
