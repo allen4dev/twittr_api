@@ -7,13 +7,14 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Tweet;
+use App\User;
 
 class ProfileTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
-    public function a_user_can_fetch_his_information_if_sends_a_valid_token()
+    public function a_user_can_fetch_his_information()
     {
         $token = $this->register();
 
@@ -25,7 +26,7 @@ class ProfileTest extends TestCase
     }
 
     /** @test */
-    public function a_user_can_fetch_his_tweets_if_sends_a_valid_token()
+    public function a_user_can_fetch_his_tweets()
     {
         $token = $this->signin();
 
@@ -40,7 +41,7 @@ class ProfileTest extends TestCase
     }
 
     /** @test */
-    public function a_user_can_fetch_his_favorites_if_sends_a_valid_token()
+    public function a_user_can_fetch_his_favorites()
     {
         $token = $this->signin();
         $headers = [ 'Authorization' => 'Bearer ' . $token ];
@@ -54,6 +55,26 @@ class ProfileTest extends TestCase
         
         $this->json('GET', '/api/me/favorites', [], $headers)
             ->assertJson([ 'data' => $tweetsFavoritedByTheUser->toArray() ])
+            ->assertStatus(200);
+    }
+
+    /** @test */
+    public function a_user_can_fetch_his_followers()
+    {
+        $userOne = create(User::class);
+
+        $token = $this->signin($userOne);
+        
+        $userTwo = create(User::class);
+
+        $this->followUser($userTwo, $token);
+        
+        auth()->logout();
+
+        $this->signin($userTwo);
+        
+        $this->json('GET', '/api/me/followers')
+            ->assertJson([ 'data' => [ $userOne->toArray() ] ])
             ->assertStatus(200);
     }
 
@@ -71,5 +92,12 @@ class ProfileTest extends TestCase
     public function favoriteTweet($tweet, $headers)
     {
         return $this->json('POST', $tweet->path() . '/favorite', [], $headers);
+    }
+
+    public function followUser($user, $token)
+    {
+        $headers = [ 'Authorization' => 'Bearer ' . $token ];
+
+        return $this->json('POST', $user->path() . '/follow', [] , $headers);
     }
 }
