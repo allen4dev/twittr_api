@@ -22,8 +22,30 @@ class RecordActivitiesTest extends TestCase
         $this->json('POST', '/api/tweets', $tweet);
 
         $this->assertDatabaseHas('activities', [
-            'user_id' => auth()->id(),
-            'tweet_id' => 1,
+            'user_id'      => auth()->id(),
+            'type'         => 'created_tweet',
+            'subject_id'   => 1,
+            'subject_type' => 'App\Tweet',
+        ]);
+    }
+
+    /** @test */
+    public function an_activity_is_recorder_after_the_user_replies_a_tweet()
+    {
+        $this->withoutExceptionHandling();
+        $this->signin();
+
+        $tweet = create(Tweet::class);
+
+        $data = [ 'body' => 'A tweet reply' ];
+
+        $this->json('POST', $tweet->path() . '/replies', $data);
+
+        $this->assertDatabaseHas('activities', [
+            'user_id'      => auth()->id(),
+            'type'         => 'created_reply',
+            'subject_id'   => 1,
+            'subject_type' => 'App\Reply',
         ]);
     }
 }

@@ -15,8 +15,10 @@ class CreateActivitiesTable extends Migration
     {
         Schema::create('activities', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('type');
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('tweet_id');
+            $table->unsignedInteger('subject_id');
+            $table->string('subject_type');
             $table->timestamps();
         });
     }

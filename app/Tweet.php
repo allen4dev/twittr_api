@@ -11,12 +11,20 @@ class Tweet extends Model
     protected static function boot()
     {
         if (auth()->guest()) return;
-        
+
         static::created(function ($model) {
-            auth()->user()
-                ->activities()
-                ->create([ 'tweet_id' => $model->id ]);
+            $model
+                ->activity()
+                ->create([
+                    'user_id' => auth()->id(),
+                    'type'    => 'created_' . strtolower((new \ReflectionClass($model))->getShortName()),
+                ]);
         });
+    }
+
+    public function activity()
+    {
+        return $this->morphMany(Activity::class, 'subject');
     }
 
     public function replies()
