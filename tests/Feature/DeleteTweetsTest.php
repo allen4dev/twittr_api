@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Tweet;
+use App\Reply;
 
 class DeleteTweetsTest extends TestCase
 {
@@ -36,6 +37,22 @@ class DeleteTweetsTest extends TestCase
         $this->assertDatabaseMissing('tweets', [
             'user_id'  => auth()->id(),
             'body'     => $tweet->body,
+        ]);
+    }
+
+    /** @test */
+    public function after_delete_a_thread_all_of_his_replies_should_also_be_deleted()
+    {
+        $this->signin();
+        
+        $tweet = create(Tweet::class, [ 'user_id'  => auth()->id() ]);
+        $reply = create(Reply::class, [ 'user_id' => 999, 'tweet_id' => $tweet->id ]);
+
+        $this->json('DELETE', $tweet->path());
+
+        $this->assertDatabaseMissing('replies', [
+            'user_id'  => 999,
+            'tweet_id' => $tweet->id,
         ]);
     }
 }

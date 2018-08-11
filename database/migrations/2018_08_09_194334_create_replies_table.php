@@ -19,6 +19,13 @@ class CreateRepliesTable extends Migration
             $table->unsignedInteger('tweet_id')->index();
             $table->text('body');
             $table->timestamps();
+
+            // Alternatively you can use model events
+            $table
+                ->foreign('tweet_id')
+                ->references('id')
+                ->on('tweets')
+                ->onDelete('cascade');
         });
     }
 
