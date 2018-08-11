@@ -8,6 +8,17 @@ class Tweet extends Model
 {
     protected $fillable = [ 'body', 'user_id' ];
 
+    protected static function boot()
+    {
+        if (auth()->guest()) return;
+        
+        static::created(function ($model) {
+            auth()->user()
+                ->activities()
+                ->create([ 'tweet_id' => $model->id ]);
+        });
+    }
+
     public function replies()
     {
         return $this->hasMany(Reply::class);

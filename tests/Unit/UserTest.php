@@ -41,4 +41,15 @@ class UserTest extends TestCase
             $user->favorites
         );
     }
+
+    /** @test */
+    public function a_user_has_many_activities()
+    {
+        $user = create(User::class);
+
+        $this->assertInstanceof(
+            'Illuminate\Database\Eloquent\Collection',
+            $user->activities
+        );
+    }
 }

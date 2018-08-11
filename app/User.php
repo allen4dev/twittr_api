@@ -70,6 +70,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(User::class, 'followers', 'follower_id', 'following_id');
     }
 
+    public function activities()
+    {
+        return $this->hasMany(Activity::class);
+    }
+
     public function publishTweet($request)
     {
         return $this->tweets()->create([ 'body' => $request->body ]);
