@@ -32,7 +32,6 @@ class RecordActivitiesTest extends TestCase
     /** @test */
     public function an_activity_is_recorder_after_the_user_replies_a_tweet()
     {
-        $this->withoutExceptionHandling();
         $this->signin();
 
         $tweet = create(Tweet::class);
