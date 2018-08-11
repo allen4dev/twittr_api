@@ -78,6 +78,20 @@ class ProfileTest extends TestCase
             ->assertStatus(200);
     }
 
+    /** @test */
+    public function a_user_can_fetch_the_users_who_he_is_following()
+    {
+        $token = $this->signin();
+
+        $followedUser = create(User::class);
+
+        $this->followUser($followedUser, $token);
+
+        $this->json('GET', '/api/me/followings')
+            ->assertJson([ 'data' => [ $followedUser->toArray() ] ])
+            ->assertStatus(200);
+    }
+
     public function register()
     {
         $response = $this->post('/api/auth/register', [

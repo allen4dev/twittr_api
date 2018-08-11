@@ -14,6 +14,7 @@ Route::prefix('me')->group(function () {
   Route::get('/favorites', 'ProfileFavoritesController@index')->middleware('auth:api');
 
   Route::get('/followers', 'FollowersController@index')->middleware('auth:api');
+  Route::get('/followings', 'FollowingsController@index')->middleware('auth:api');
 });
 
 Route::prefix('users')->group(function () {
