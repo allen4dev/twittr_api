@@ -11,7 +11,8 @@ Route::prefix('me')->group(function () {
   Route::get('/', 'ProfileController@show')->middleware('auth:api');
   Route::get('/tweets', 'ProfileController@index')->middleware('auth:api');
   
-  Route::get('/favorites', 'ProfileFavoritesController@index')->middleware('auth:api');
+  Route::get('/favorites/replies', 'ReplyFavoritesController@index')->middleware('auth:api');
+  Route::get('/favorites/tweets', 'TweetFavoritesController@index')->middleware('auth:api');
 
   Route::get('/followers', 'FollowersController@index')->middleware('auth:api');
   Route::get('/followings', 'FollowingsController@index')->middleware('auth:api');
@@ -37,8 +38,8 @@ Route::prefix('tweets')->group(function () {
   Route::get('/{tweet}/replies', 'ReplyController@index');
   Route::post('/{tweet}/replies', 'ReplyController@store')->middleware('auth:api');
 
-  Route::post('/{tweet}/favorite', 'FavoriteController@store')->middleware('auth:api');
-  Route::delete('/{tweet}/unfavorite', 'FavoriteController@destroy')->middleware('auth:api');
+  Route::post('/{tweet}/favorite', 'TweetFavoritesController@store')->middleware('auth:api');
+  Route::delete('/{tweet}/unfavorite', 'TweetFavoritesController@destroy')->middleware('auth:api');
 });
 
 Route::prefix('replies')->group(function () {

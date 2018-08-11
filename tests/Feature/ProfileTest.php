@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use App\Reply;
 use App\Tweet;
 use App\User;
 
@@ -41,7 +42,7 @@ class ProfileTest extends TestCase
     }
 
     /** @test */
-    public function a_user_can_fetch_his_favorites()
+    public function a_user_can_fetch_his_favorited_tweets()
     {
         $token = $this->signin();
         $headers = [ 'Authorization' => 'Bearer ' . $token ];
@@ -50,11 +51,29 @@ class ProfileTest extends TestCase
         $notFavoritedTweet = create(Tweet::class);
 
         $tweetsFavoritedByTheUser->each(function ($tweet) use ($headers) {
-            $this->favoriteTweet($tweet, $headers);
+            $this->favoriteResource($tweet, $headers);
         });
         
-        $this->json('GET', '/api/me/favorites', [], $headers)
+        $this->json('GET', '/api/me/favorites/tweets', [], $headers)
             ->assertJson([ 'data' => $tweetsFavoritedByTheUser->toArray() ])
+            ->assertStatus(200);
+    }
+
+    /** @test */
+    public function a_user_can_fetch_his_favorited_replies()
+    {
+        $token = $this->signin();
+        $headers = [ 'Authorization' => 'Bearer ' . $token ];
+
+        $repliesFavoritedByTheUser = create(Reply::class, [], 2);
+        $notFavoritedReply = create(Reply::class);
+
+        $repliesFavoritedByTheUser->each(function ($reply) use ($headers) {
+            $this->favoriteResource($reply, $headers);
+        });
+        
+        $this->json('GET', '/api/me/favorites/replies', [], $headers)
+            ->assertJson([ 'data' => $repliesFavoritedByTheUser->toArray() ])
             ->assertStatus(200);
     }
 
@@ -103,9 +122,9 @@ class ProfileTest extends TestCase
         return $response->original['data']['token'];
     }
 
-    public function favoriteTweet($tweet, $headers)
+    public function favoriteResource($resource, $headers)
     {
-        return $this->json('POST', $tweet->path() . '/favorite', [], $headers);
+        return $this->json('POST', $resource->path() . '/favorite', [], $headers);
     }
 
     public function followUser($user, $token)

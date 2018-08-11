@@ -26,6 +26,7 @@ class FetchUsersTest extends TestCase
     /** @test */
     public function a_guest_can_fetch_all_users_who_favorited_a_tweet()
     {
+        $this->withoutExceptionHandling();
         $token = $this->signin();
         
         $tweet = create(Tweet::class);

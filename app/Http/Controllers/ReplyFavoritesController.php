@@ -10,6 +10,13 @@ use App\Reply;
 
 class ReplyFavoritesController extends Controller
 {
+    public function index()
+    {
+        $replies = auth()->user()->favorites()->whereType('reply')->get()->map->favorited;
+
+        return ReplyResource::collection($replies);
+    }
+
     public function store(Reply $reply)
     {
         $reply->favorite();

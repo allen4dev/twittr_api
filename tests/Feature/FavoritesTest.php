@@ -23,6 +23,7 @@ class FavoritesTest extends TestCase
     /** @test */
     public function a_user_can_favorite_a_tweet()
     {
+        $this->withoutExceptionHandling();
         $token = $this->signin();
 
         $tweet = create(Tweet::class);
@@ -32,8 +33,10 @@ class FavoritesTest extends TestCase
             ->assertStatus(200);
 
         $this->assertDatabaseHas('favorites', [
-            'user_id'  => auth()->id(),
-            'favorited_id' => $tweet->id,
+            'user_id'        => auth()->id(),
+            'type'           => 'tweet',
+            'favorited_id'   => $tweet->id,
+            'favorited_type' => Tweet::class,
         ]);
     }
 
@@ -88,6 +91,7 @@ class FavoritesTest extends TestCase
 
         $this->assertDatabaseHas('favorites', [
             'user_id'        => auth()->id(),
+            'type'           => 'reply',
             'favorited_id'   => $reply->id,
             'favorited_type' => Reply::class
         ]);

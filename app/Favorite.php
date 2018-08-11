@@ -8,9 +8,7 @@ class Favorite extends Model
 {
     protected $fillable = [
         'user_id',
-        'tweet_id',
-        'favorited_id',
-        'favorited_type'
+        'type',
     ];
 
     public function user()

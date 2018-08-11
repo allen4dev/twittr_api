@@ -13,7 +13,7 @@ trait Favoritable {
 
     public function favorite()
     {
-        $attributes = [ 'user_id' => auth()->id() ];
+        $attributes = [ 'user_id' => auth()->id(), 'type' => $this->getFavoritedType() ];
 
         if (! $this->isFavorited($attributes)) {
             $this->favorites()->create($attributes);
@@ -24,7 +24,7 @@ trait Favoritable {
 
     public function unfavorite()
     {
-        $attributes = [ 'user_id' => auth()->id() ];
+        $attributes = [ 'user_id' => auth()->id(), 'type' => $this->getFavoritedType() ];
 
         if ($this->isFavorited($attributes)) {
             $this->favorites()->where($attributes)->delete();
@@ -36,5 +36,10 @@ trait Favoritable {
     public function isFavorited($attributes)
     {
         return $this->favorites()->where($attributes)->exists();
+    }
+
+    public function getFavoritedType()
+    {
+        return strtolower((new \ReflectionClass($this))->getShortName());
     }
 }
