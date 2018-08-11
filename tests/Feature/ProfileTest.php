@@ -111,6 +111,31 @@ class ProfileTest extends TestCase
             ->assertStatus(200);
     }
 
+    /** @test */
+    public function a_user_can_fetch_his_list_of_activities()
+    {
+        $this->signin();
+
+        $tweet = create(Tweet::class, [ 'user_id' => auth()->id() ]);
+        $reply = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
+
+        $this->json('GET', '/api/me/activities')
+            ->assertJson([
+                'data' => [
+                    [
+                        'user_id' => auth()->id(),
+                        'subject_id' => $tweet->id,
+                        'type' => 'created_tweet'
+                    ],
+                    [
+                        'user_id' => auth()->id(),
+                        'subject_id' => $reply->id,
+                        'type' => 'created_reply'
+                    ],
+                ]
+            ])->assertStatus(200);
+    }
+
     public function register()
     {
         $response = $this->post('/api/auth/register', [
