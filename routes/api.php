@@ -40,3 +40,8 @@ Route::prefix('tweets')->group(function () {
   Route::post('/{tweet}/favorite', 'FavoriteController@store')->middleware('auth:api');
   Route::delete('/{tweet}/unfavorite', 'FavoriteController@destroy')->middleware('auth:api');
 });
+
+Route::prefix('replies')->group(function () {
+  Route::post('/{reply}/favorite', 'ReplyFavoritesController@store')->middleware('auth:api');
+  Route::delete('/{reply}/unfavorite', 'ReplyFavoritesController@destroy')->middleware('auth:api');
+});

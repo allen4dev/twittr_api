@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Tweet;
+use App\Reply;
 
 class FavoritesTest extends TestCase
 {
@@ -26,7 +27,7 @@ class FavoritesTest extends TestCase
 
         $tweet = create(Tweet::class);
 
-        $this->favoriteTweet($tweet, $token)
+        $this->favoriteResource($tweet, $token)
             ->assertJson([ 'data' => $tweet->toArray() ])
             ->assertStatus(200);
 
@@ -44,8 +45,8 @@ class FavoritesTest extends TestCase
         $tweet = create(Tweet::class);
 
         try {
-            $this->favoriteTweet($tweet, $token);
-            $this->favoriteTweet($tweet, $token);
+            $this->favoriteResource($tweet, $token);
+            $this->favoriteResource($tweet, $token);
         } catch (Exception $e) {
             $this->fail('You cannot favorite a tweet more than once.');
         }
@@ -62,7 +63,7 @@ class FavoritesTest extends TestCase
 
         $headers = [ 'Authorization' => 'Bearer ' . $token ];
 
-        $this->favoriteTweet($tweet, $token);
+        $this->favoriteResource($tweet, $token);
 
         $this->json('DELETE', $tweet->path() . '/unfavorite', [], $headers)
             ->assertJson([ 'data' => $tweet->toArray() ])
@@ -74,10 +75,50 @@ class FavoritesTest extends TestCase
         ]);
     }
 
-    public function favoriteTweet($tweet, $token)
+    /** @test */
+    public function a_user_can_favorite_a_reply()
+    {
+        $token = $this->signin();
+
+        $reply = create(Reply::class);
+
+        $this->favoriteResource($reply, $token)
+            ->assertJson([ 'data' => $reply->toArray() ])
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('favorites', [
+            'user_id'        => auth()->id(),
+            'favorited_id'   => $reply->id,
+            'favorited_type' => Reply::class
+        ]);
+    }
+
+    public function favoriteResource($resource, $token)
     {
         $headers = [ 'Authorization' => 'Bearer ' . $token ];
 
-        return $this->json('POST', $tweet->path() . '/favorite', [], $headers);
+        return $this->json('POST', $resource->path() . '/favorite', [], $headers);
+    }
+
+    /** @test */
+    public function a_user_can_unfavorite_a_reply()
+    {
+        $token = $this->signin();
+
+        $reply = create(Reply::class);
+
+        $headers = [ 'Authorization' => 'Bearer ' . $token ];
+
+        $this->favoriteResource($reply, $token);
+
+        $this->json('DELETE', $reply->path() . '/unfavorite', [], $headers)
+            ->assertJson([ 'data' => $reply->toArray() ])
+            ->assertStatus(200);
+
+        $this->assertDatabaseMissing('favorites', [
+            'user_id'  => auth()->id(),
+            'favorited_id' => $reply->id,
+            'favorited_type' => Reply::class,
+        ]);
     }
 }
