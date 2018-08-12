@@ -29,7 +29,7 @@ class TweetController extends Controller
 
     public function update(Tweet $tweet)
     {
-        request()->validate([ 'body' => 'string' ]);
+        $this->authorize('update', $tweet);
 
         $tweet->update([ 'body' => request('body') ]);
 

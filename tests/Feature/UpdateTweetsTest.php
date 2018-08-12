@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Tweet;
+use App\User;
 
 class UpdateTweetsTest extends TestCase
 {
@@ -42,5 +43,17 @@ class UpdateTweetsTest extends TestCase
             'user_id' => auth()->id(),
             'body'    => $newFields['body'],
         ]);
+    }
+
+    /** @test */
+    public function just_authorized_users_can_update_a_tweet()
+    {
+        $this->signin();
+
+        $user  = create(User::class);
+        $tweet = create(Tweet::class, [ 'user_id' => $user->id ]);
+
+        $this->json('PATCH', $tweet->path(), ['body' => 'Updating other user tweet'])
+            ->assertStatus(403);
     }
 }
