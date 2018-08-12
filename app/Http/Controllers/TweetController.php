@@ -38,7 +38,8 @@ class TweetController extends Controller
 
     public function destroy(Tweet $tweet)
     {
-        // ToDo: Restrict other users to make this action with policies
+        $this->authorize('delete', $tweet);
+
         $tweet->delete();
 
         return response()->json()->setStatusCode(204);

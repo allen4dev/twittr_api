@@ -13,7 +13,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        Tweet::class => TweetPolicy::class,
+        'App\Tweet' => 'App\Policies\TweetPolicy',
     ];
 
     /**

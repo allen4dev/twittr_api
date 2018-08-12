@@ -6,8 +6,9 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use App\Tweet;
 use App\Reply;
+use App\Tweet;
+use App\User;
 
 class DeleteTweetsTest extends TestCase
 {
@@ -38,6 +39,17 @@ class DeleteTweetsTest extends TestCase
             'user_id'  => auth()->id(),
             'body'     => $tweet->body,
         ]);
+    }
+
+    /** @test */
+    public function just_authorized_users_can_delete_a_tweet()
+    {
+        $this->signin();
+
+        $user = create(User::class);
+        $tweet = create(Tweet::class);
+
+        $this->json('DELETE', $tweet->path())->assertStatus(403);
     }
 
     /** @test */

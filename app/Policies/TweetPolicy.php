@@ -42,7 +42,7 @@ class TweetPolicy
      */
     public function update(User $user, Tweet $tweet)
     {
-        return $user->id === $tweet->user_id;
+        return $tweet->user_id == $user->id;
     }
 
     /**
@@ -54,7 +54,7 @@ class TweetPolicy
      */
     public function delete(User $user, Tweet $tweet)
     {
-        //
+        return $user->id == $tweet->user_id;
     }
 
     /**
