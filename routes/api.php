@@ -9,6 +9,7 @@ Route::prefix('auth')->group(function () {
 
 Route::prefix('me')->group(function () {
   Route::get('/', 'ProfileController@show')->middleware('auth:api');
+  Route::post('/avatar', 'AvatarController@store')->middleware('auth:api');
   Route::get('/tweets', 'ProfileController@index')->middleware('auth:api');
   
   Route::get('/favorites/replies', 'ReplyFavoritesController@index')->middleware('auth:api');
