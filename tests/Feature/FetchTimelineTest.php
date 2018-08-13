@@ -16,7 +16,7 @@ class FetchTimelineTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function a_user_can_fetch_his_timeline()
+    public function a_user_receives_tweets_created_by_him_in_his_timeline()
     {
         $this->signin();
 
@@ -32,12 +32,5 @@ class FetchTimelineTest extends TestCase
         $this->json('GET', '/api/me/timeline')
             ->assertJson([ 'data' => [ $tweet->toArray() ]])
             ->assertStatus(200);
-    }
-
-    public function publishTweet()
-    {
-        $tweet = [ 'body' => 'hey' ];
-
-        return $this->json('POST', '/api/tweets', $tweet);
     }
 }

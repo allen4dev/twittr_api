@@ -11,7 +11,11 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        $tweets = auth()->user()->tweets;
+        // ToDo: Try a raw sql or eager loading
+        $userTweets      = auth()->user()->tweets;
+        $retweetedTweets = auth()->user()->retweets->map->tweet;
+
+        $tweets = $userTweets->merge($retweetedTweets);
 
         return TweetResource::collection($tweets);
     }

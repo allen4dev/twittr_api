@@ -5,10 +5,12 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 
 use App\Reply;
 use App\Tweet;
 use App\User;
+
 
 class ProfileTest extends TestCase
 {
@@ -39,6 +41,27 @@ class ProfileTest extends TestCase
         $this->json('GET', '/api/me/tweets', [], $headers)
             ->assertJson([ 'data' => $userTweets->toArray()])
             ->assertStatus(200);
+    }
+
+    /** @test */
+    public function a_user_also_receives_retweeted_tweets_when_fetch_his_tweets()
+    {
+        $this->signin();
+        
+        $userTweet = create(Tweet::class, [ 'user_id' => auth()->id() ]);
+
+        $retweetedTweet = create(Tweet::class);
+
+        DB::table('retweets')->insert([
+            'user_id'  => auth()->id(),
+            'tweet_id' => $retweetedTweet->id,
+        ]);
+
+        $this->json('GET', 'api/me/tweets')
+            ->assertJson([ 'data' => [
+                $userTweet->toArray(),
+                $retweetedTweet->toArray(),
+            ] ]);
     }
 
     /** @test */
