@@ -26,9 +26,11 @@ Route::prefix('me')->group(function () {
 Route::prefix('users')->group(function () {
   Route::get('/{user}', 'UserController@show');
   Route::get('/{user}/tweets', 'UserTweetsController@index');
-  
+
   Route::post('/{user}/follow', 'FollowUserController@store')->middleware('auth:api');
   Route::delete('/{user}/unfollow', 'FollowUserController@destroy')->middleware('auth:api');
+  
+  Route::post('/{user}/photos', 'UserPhotosController@store');
 });
 
 Route::prefix('tweets')->group(function () {

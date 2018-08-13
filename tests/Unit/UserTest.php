@@ -32,6 +32,17 @@ class UserTest extends TestCase
     }
 
     /** @test */
+    public function a_user_has_many_photos()
+    {
+        $user = create(User::class);
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Collection',
+            $user->photos
+        );
+    }
+
+    /** @test */
     public function a_user_has_many_favorites()
     {
         $user = create(User::class);
