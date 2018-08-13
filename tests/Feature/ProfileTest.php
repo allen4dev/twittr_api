@@ -7,10 +7,10 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 
+use App\Photo;
 use App\Reply;
 use App\Tweet;
 use App\User;
-
 
 class ProfileTest extends TestCase
 {
@@ -157,6 +157,18 @@ class ProfileTest extends TestCase
                     ],
                 ]
             ])->assertStatus(200);
+    }
+
+    /** @test */
+    public function a_user_can_fetch_his_photos()
+    {
+        $this->signin();
+
+        $photos = create(Photo::class, [ 'user_id' => auth()->id() ], 2);
+
+        $this->json('GET', '/api/me/photos')
+            ->assertJson([ 'data' => $photos->toArray() ])
+            ->assertStatus(200);
     }
 
     public function register()
