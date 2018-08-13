@@ -19,10 +19,12 @@ class UserPhotosController extends Controller
 
     public function store(User $user)
     {
-        request()->validate([ 'photo' => 'required|image' ]);
+        // ToDo: validate the request
 
-        $path = request()->file('photo')->store('photos/' . $user->id, 'public');
-
-        $user->photos()->create(compact('path'));
+        array_map(function ($photo) use ( $user ) {
+            $path = $photo->store('photos/' . $user->id, 'public');
+            
+            $user->photos()->create(compact('path'));
+        }, request()->file('photos'));
     }
 }

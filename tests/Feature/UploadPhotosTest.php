@@ -22,7 +22,7 @@ class UploadPhotosTest extends TestCase
         
         $file = UploadedFile::fake()->image('user_photo.jpg');
 
-        $data = [ 'photo' => $file ];
+        $data = [ 'photos' => [ $file ] ];
 
         $this->json('POST', auth()->user()->path() . '/photos', $data);
         
@@ -36,5 +36,28 @@ class UploadPhotosTest extends TestCase
                 'path'    => $path,
             ]);
         });
+    }
+
+    /** @test */
+    public function a_user_can_upload_multiple_photos()
+    {
+        $this->signin();
+
+        $data = [ 'photos' => [
+            $photo1 = UploadedFile::fake()->image('user_photo.jpg'),            
+            $photo2 = UploadedFile::fake()->image('user_photo.jpg'),            
+        ]];
+
+        $this->json('POST', auth()->user()->path() . '/photos', $data);
+
+        foreach ($data['photos'] as $photo) {
+            $uid = auth()->id();
+            $path = "photos/{$uid}/{$photo->hashName()}";
+
+            $this->assertDatabaseHas('photos', [
+                'user_id' => $uid,
+                'path' => $path,
+            ]);
+        }
     }
 }
