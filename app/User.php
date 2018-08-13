@@ -75,6 +75,14 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Activity::class);
     }
 
+    public function retweets()
+    {
+        /**
+         * !Potential Many to Many to get all users who retweet the tweet
+         */
+        return $this->hasMany(Retweet::class);
+    }
+
     public function publishTweet($request)
     {
         return $this->tweets()->create([ 'body' => $request->body ]);

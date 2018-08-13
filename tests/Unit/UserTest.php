@@ -52,4 +52,15 @@ class UserTest extends TestCase
             $user->activities
         );
     }
+
+    /** @test */
+    public function a_user_has_many_retweeted_tweets()
+    {
+        $user = create(User::class);
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Collection',
+            $user->retweets
+        );
+    }
 }

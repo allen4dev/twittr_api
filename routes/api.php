@@ -37,6 +37,8 @@ Route::prefix('tweets')->group(function () {
   Route::patch('/{tweet}', 'TweetController@update')->middleware('auth:api');
   Route::delete('/{tweet}', 'TweetController@destroy')->middleware('auth:api');
 
+  Route::post('/{tweet}/retweet', 'RetweetController@store')->middleware('auth:api');
+
   Route::get('/{tweet}/favorited', 'TweetFavoritesController@show');
 
   Route::get('/{tweet}/replies', 'ReplyController@index');
