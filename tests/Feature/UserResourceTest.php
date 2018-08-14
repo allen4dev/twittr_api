@@ -6,6 +6,8 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use App\Http\Resources\UserIdentifierResource;
+
 use App\User;
 
 class UserResourceTest extends TestCase
@@ -42,7 +44,7 @@ class UserResourceTest extends TestCase
             ->assertJson([
                 'data' => [
                     'links' => [
-                        'self' => route('users.show', ['user' => $user->id])
+                        'related' => route('users.show', ['user' => $user->id])
                     ]
                 ]
             ]);

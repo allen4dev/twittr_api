@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use App\Http\Resources\TweetRelationshipResource;
+
 class TweetResource extends JsonResource
 {
     public function toArray($request)
@@ -15,8 +17,9 @@ class TweetResource extends JsonResource
                 'body' => $this->body,
             ],
             'links' => [
-                'self' => route('tweets.show', [ 'id' => $this->id ]),
-            ]
+                'related' => route('tweets.show', [ 'id' => $this->id ]),
+            ],
+            'relationships' => new TweetRelationshipResource($this)
         ];
     }
 }
