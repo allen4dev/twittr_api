@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Tweet;
+use App\User;
 
 class TweetTest extends TestCase
 {
@@ -29,5 +30,13 @@ class TweetTest extends TestCase
             'Illuminate\Database\Eloquent\Collection',
             $tweet->replies
         );
+    }
+
+    /** @test */
+    public function a_tweet_belongs_to_a_user()
+    {
+        $tweet = create(Tweet::class);        
+
+        $this->assertInstanceOf(User::class, $tweet->user);
     }
 }
