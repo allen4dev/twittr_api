@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use App\Http\Resources\PhotoRelationshipsResource;
+
 class PhotoResource extends JsonResource
 {
     /**
@@ -19,7 +21,8 @@ class PhotoResource extends JsonResource
             'id'   => (string) $this->id,
             'attributes' => [
                 'path' => $this->path,
-            ]
+            ],
+            'relationships' => new PhotoRelationshipsResource($this->user),
         ];
     }
 }

@@ -33,6 +33,27 @@ class PhotoResourceTest extends TestCase
              ]);
      }
 
+     /** @test */
+    public function it_should_contain_a_relationships_object_containing_a_user_resource_identifier_under_a_data_object()
+    {
+        $user  = create(User::class);
+        $photo = create(Photo::class, [ 'user_id' => $user->id ]);
+
+        $this->fetchUserPhotos($user)
+            ->assertJson([
+                'data' => [[
+                    'relationships' => [
+                        "user" => [
+                            "links" => [
+                                "related" => route('users.show', [ 'id' => $user->id ])
+                            ],
+                            "data" => [ "type" => "users", "id" => (string) $user->id ]
+                        ]
+                    ]
+                ]]
+            ]);
+    }
+
      public function fetchUserPhotos($user)
      {
         return $this->json('GET', $user->path() . '/photos');
