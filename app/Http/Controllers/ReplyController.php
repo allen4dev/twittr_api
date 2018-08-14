@@ -14,7 +14,9 @@ class ReplyController extends Controller
 {
     public function index(Tweet $tweet)
     {
-        return new ReplyCollection($tweet->replies);
+        $replies = $tweet->replies()->paginate();
+        
+        return new ReplyCollection($replies, $tweet);
     }
 
     public function show(Reply $reply)
