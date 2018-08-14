@@ -19,7 +19,7 @@ Route::prefix('me')->group(function () {
   Route::get('/followers', 'FollowersController@index')->middleware('auth:api');
   Route::get('/followings', 'FollowingsController@index')->middleware('auth:api');
 
-  Route::get('/activities', 'ActivityController@index')->middleware('auth:api');
+  Route::get('/activities', 'ActivityController@index')->middleware('auth:api')->name('activities');
   
   Route::get('/timeline', 'TimelineController@index')->middleware('auth:api');
 

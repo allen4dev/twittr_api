@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Resources\ActivityResource;
+use App\Http\Resources\ActivityCollection;
 
 class ActivityController extends Controller
 {
@@ -12,6 +12,6 @@ class ActivityController extends Controller
     {
         $activities = auth()->user()->activities;
 
-        return ActivityResource::collection($activities);
+        return new ActivityCollection($activities);
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Activity extends Model
 {
-    protected $fillable = [ 'user_id', 'type' ];
+    protected $fillable = [ 'user_id', 'action' ];
 
     public function subject()
     {

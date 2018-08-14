@@ -15,6 +15,7 @@ class RecordActivitiesTest extends TestCase
     /** @test */
     public function an_activity_is_recorder_after_create_a_tweet()
     {
+        $this->withoutExceptionHandling();
         $this->signin();
 
         $tweet = raw(Tweet::class, [ 'user_id' => auth()->id() ]);
@@ -23,7 +24,7 @@ class RecordActivitiesTest extends TestCase
 
         $this->assertDatabaseHas('activities', [
             'user_id'      => auth()->id(),
-            'type'         => 'created_tweet',
+            'action'       => 'created_tweet',
             'subject_id'   => 1,
             'subject_type' => 'App\Tweet',
         ]);
