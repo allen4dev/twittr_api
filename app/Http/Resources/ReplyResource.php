@@ -19,6 +19,9 @@ class ReplyResource extends JsonResource
             'id'   => (string) $this->id,
             'attributes' => [
                 'body' => $this->body,
+            ],
+            'links' => [
+                'related' => route('replies.show', [ 'reply' => $this->id ])
             ]
         ];
     }

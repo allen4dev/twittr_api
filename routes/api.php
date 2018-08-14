@@ -55,7 +55,7 @@ Route::prefix('tweets')->group(function () {
 });
 
 Route::prefix('replies')->group(function () {
-  Route::get('/{reply}', 'ReplyController@show');
+  Route::get('/{reply}', 'ReplyController@show')->name('replies.show');
   Route::post('/{reply}/favorite', 'ReplyFavoritesController@store')->middleware('auth:api');
   Route::delete('/{reply}/unfavorite', 'ReplyFavoritesController@destroy')->middleware('auth:api');
 });

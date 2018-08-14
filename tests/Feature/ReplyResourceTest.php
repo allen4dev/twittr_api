@@ -33,6 +33,21 @@ class ReplyResourceTest extends TestCase
     }
 
     /** @test */
+    public function it_should_contain_a_links_object_with_a_self_url_link_under_a_data_object()
+    {
+        $reply = create(Reply::class);
+
+        $this->json('GET', $reply->path())
+            ->assertJson([
+                'data' => [
+                    'links' => [
+                        'related' => route('replies.show', [ 'reply' => $reply->id ])
+                    ]
+                ]
+            ]);
+    }
+
+    /** @test */
     // public function a_collection_should_contain_a_list_of_reply_resources_under_a_data_object()
     // {
     //     $this->withoutExceptionHandling();
