@@ -14,6 +14,12 @@ class ReplyResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'type' => 'replies',
+            'id'   => (string) $this->id,
+            'attributes' => [
+                'body' => $this->body,
+            ]
+        ];
     }
 }

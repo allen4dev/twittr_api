@@ -14,6 +14,25 @@ class ReplyResourceTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function it_should_contain_a_type_id_and_attributes_under_a_data_object()
+    {
+        $this->withoutExceptionHandling();
+
+        $reply = create(Reply::class);
+
+        $this->json('GET', $reply->path())
+            ->assertJson([
+                'data' => [
+                    'type' => 'replies',
+                    'id'   => (string) $reply->id,
+                    'attributes' => [
+                        'body' => $reply->body,
+                    ]
+                ]
+            ]);
+    }
+
+    /** @test */
     // public function a_collection_should_contain_a_list_of_reply_resources_under_a_data_object()
     // {
     //     $this->withoutExceptionHandling();
