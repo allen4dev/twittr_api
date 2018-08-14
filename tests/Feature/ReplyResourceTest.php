@@ -48,6 +48,27 @@ class ReplyResourceTest extends TestCase
     }
 
     /** @test */
+    public function it_should_contain_a_relationships_object_containing_a_tweet_resource_identifier_under_a_data_object()
+    {
+        $tweet  = create(Tweet::class);
+        $reply = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
+
+        $this->fetchReply($reply)
+            ->assertJson([
+                'data' => [
+                    'relationships' => [
+                        "tweet" => [
+                            "links" => [
+                                "related" => route('tweets.show', [ 'tweet' => $tweet->id ])
+                            ],
+                            "data" => [ "type" => "tweets", "id" => (string) $tweet->id ]
+                        ]
+                    ]
+                ]
+            ]);
+    }
+
+    /** @test */
     // public function a_collection_should_contain_a_list_of_reply_resources_under_a_data_object()
     // {
     //     $this->withoutExceptionHandling();
@@ -77,6 +98,11 @@ class ReplyResourceTest extends TestCase
     //             ]
     //         ]);
     // }
+
+    public function fetchReply($reply)
+    {
+        return $this->json('GET', $reply->path());
+    }
 
     public function fetchTweetReplies($tweet)
     {

@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Reply;
+use App\Tweet;
 
 class ReplyTest extends TestCase
 {
@@ -18,5 +19,13 @@ class ReplyTest extends TestCase
         $reply = create(Reply::class);
 
         $this->assertEquals("/api/replies/{$reply->id}", $reply->path());
+    }
+
+    /** @test */
+    public function a_reply_belongs_to_a_tweet()
+    {
+        $reply = create(Reply::class);
+
+        $this->assertInstanceOf(Tweet::class, $reply->tweet);
     }
 }

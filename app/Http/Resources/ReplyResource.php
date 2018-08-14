@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use App\Http\Resources\ReplyRelationshipsResource;
+
 class ReplyResource extends JsonResource
 {
     /**
@@ -22,7 +24,8 @@ class ReplyResource extends JsonResource
             ],
             'links' => [
                 'related' => route('replies.show', [ 'reply' => $this->id ])
-            ]
+            ],
+            'relationships' => new ReplyRelationshipsResource($this->tweet),
         ];
     }
 }

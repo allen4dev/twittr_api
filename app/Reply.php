@@ -18,4 +18,9 @@ class Reply extends Model
     {
         return '/api/replies/' . $this->id;
     }
+
+    public function tweet()
+    {
+        return $this->belongsTo(Tweet::class);
+    }
 }
