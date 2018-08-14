@@ -23,6 +23,9 @@ class UserResource extends JsonResource
                 'fullname' => $this->fullname,
                 'profile_image' => $this->profile_image,
                 'contact_info' => $this->contact_info,
+            ],
+            'links' => [
+                'self' => route('users.show', ['user' => $this->id]),
             ]
         ];
     }
