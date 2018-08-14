@@ -39,7 +39,7 @@ Route::prefix('users')->group(function () {
 Route::prefix('tweets')->group(function () {
   Route::post('/', 'TweetController@store')->middleware('auth:api');
   
-  Route::get('/{tweet}', 'TweetController@show');
+  Route::get('/{tweet}', 'TweetController@show')->name('tweets.show');
   Route::patch('/{tweet}', 'TweetController@update')->middleware('auth:api');
   Route::delete('/{tweet}', 'TweetController@destroy')->middleware('auth:api');
 
