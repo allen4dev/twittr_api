@@ -72,7 +72,7 @@ class ReplyResourceTest extends TestCase
     public function it_should_contain_a_included_object_at_the_same_level_of_data_with_a_tweet_resource()
     {
         $this->withoutExceptionHandling();
-        
+
         $tweet = create(Tweet::class);
         $reply  = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
 
@@ -92,34 +92,40 @@ class ReplyResourceTest extends TestCase
     }
 
     /** @test */
-    // public function a_collection_should_contain_a_list_of_reply_resources_under_a_data_object()
+    public function a_collection_should_contain_a_list_of_reply_resources_under_a_data_object()
+    {
+        $this->withoutExceptionHandling();
+
+        $tweet = create(Tweet::class);
+
+        $reply1 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
+        $reply2 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
+
+        $this->fetchTweetReplies($tweet)
+            ->assertJson([
+                'data' => [
+                    [
+                        'type' => 'replies',
+                        'id'   => (string) $reply1->id,
+                        'attributes' => [
+                            'body' => $reply1->body,
+                        ]
+                    ],
+                    [
+                        'type' => 'replies',
+                        'id'   => (string) $reply2->id,
+                        'attributes' => [
+                            'body' => $reply2->body,
+                        ]
+                    ],
+                ]
+            ]);
+    }
+
+    // /** @test */
+    // public function a_collection_should_have_a_links_object_at_the_same_level_of_data_with_information_about_the_pagination()
     // {
-    //     $this->withoutExceptionHandling();
-
-    //     $tweet = create(Tweet::class);
-
-    //     $reply1 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
-    //     $reply2 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
-
-    //     $this->fetchTweetReplies($tweet)
-    //         ->assertJson([
-    //             'data' => [
-    //                 [
-    //                     'type' => 'replies',
-    //                     'id'   => (string) $reply1->id,
-    //                     'attributes' => [
-    //                         'body' => $reply1->body,
-    //                     ]
-    //                 ],
-    //                 [
-    //                     'type' => 'replies',
-    //                     'id'   => (string) $reply2->id,
-    //                     'attributes' => [
-    //                         'body' => $reply2->body,
-    //                     ]
-    //                 ],
-    //             ]
-    //         ]);
+    //     # code...
     // }
 
     public function fetchReply($reply)

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Resources\ReplyResource;
+use App\Http\Resources\ReplyCollection;
 
 use App\Tweet;
 use App\Reply;
@@ -13,8 +14,7 @@ class ReplyController extends Controller
 {
     public function index(Tweet $tweet)
     {
-        // ! Use a ReplyCollection to customize the data
-        return ReplyResource::collection($tweet->replies);
+        return new ReplyCollection($tweet->replies);
     }
 
     public function show(Reply $reply)
