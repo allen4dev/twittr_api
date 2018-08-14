@@ -17,6 +17,11 @@ class UserPhotosController extends Controller
         return PhotoResource::collection($photos);
     }
 
+    public function show(User $user)
+    {
+        return PhotoResource::collection($user->photos);
+    }
+
     public function store(User $user)
     {
         // ToDo: validate the request
