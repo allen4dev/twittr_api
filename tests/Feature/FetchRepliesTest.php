@@ -27,4 +27,16 @@ class FetchRepliesTest extends TestCase
             ])
             ->assertStatus(200);
     }
+
+    /** @test */
+    public function guests_can_fetch_a_single_reply()
+    {
+        $reply = create(Reply::class);
+
+        $this->json('GET', $reply->path())
+            ->assertJson([
+                'data' => $reply->toArray()
+            ])
+            ->assertStatus(200);
+    }
 }

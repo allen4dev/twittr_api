@@ -17,6 +17,11 @@ class ReplyController extends Controller
         return ReplyResource::collection($tweet->replies);
     }
 
+    public function show(Reply $reply)
+    {
+        return new ReplyResource($reply);
+    }
+
     public function store(Tweet $tweet)
     {
         request()->validate([ 'body' => 'required' ]);
