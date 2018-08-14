@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Resources\PhotoResource;
+use App\Http\Resources\PhotoCollection;
 
 use App\User;
 
@@ -19,7 +20,7 @@ class UserPhotosController extends Controller
 
     public function show(User $user)
     {
-        return PhotoResource::collection($user->photos);
+        return new PhotoCollection($user->photos()->paginate(), $user);
     }
 
     public function store(User $user)

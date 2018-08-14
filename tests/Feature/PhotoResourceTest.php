@@ -54,6 +54,32 @@ class PhotoResourceTest extends TestCase
             ]);
     }
 
+    /** @test */
+    public function a_collection_should_contain_an_included_object_at_the_same_level_of_data_with_the_user_resource()
+    {
+        $this->withoutExceptionHandling();
+        
+        $user = create(User::class);
+
+        $photo1 = create(Photo::class, [ 'user_id' => $user->id ]);
+        $photo2 = create(Photo::class, [ 'user_id' => $user->id ]);
+
+        $this->fetchUserPhotos($user)
+            ->assertJson([
+                'included' => [
+                    'type' => 'users',
+                    'id'   => (string) $user->id,
+                    'attributes' => [
+                        'username' => $user->username,
+                        // more info
+                    ],
+                    'links' => [
+                        'related' => route('users.show', ['user' => $user->id]),
+                    ]
+                ],
+            ]);
+    }
+
      public function fetchUserPhotos($user)
      {
         return $this->json('GET', $user->path() . '/photos');
