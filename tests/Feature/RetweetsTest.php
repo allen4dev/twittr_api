@@ -20,8 +20,9 @@ class RetweetsTest extends TestCase
         $tweetToRetweet = create(Tweet::class);
 
         $this->json('POST', $tweetToRetweet->path() . '/retweet')
-            // ! Fix response
-            // ->assertJson([ 'data' => $tweetToRetweet->toArray() ])
+            ->assertJson([
+                'data' => [ 'type' => 'tweets', 'id' => (string) $tweetToRetweet->id  ]
+            ])
             ->assertStatus(200);
 
         $this->assertDatabaseHas('retweets', [

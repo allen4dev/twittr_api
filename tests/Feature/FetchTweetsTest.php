@@ -19,8 +19,9 @@ class FetchTweetsTest extends TestCase
         $tweet = create(Tweet::class);
 
         $this->json('GET', $tweet->path())
-            // ! Fix response
-            // ->assertJson([ 'data' => $tweet->toArray() ])
+            ->assertJson([
+                'data' => [ 'type' => 'tweets', 'id' => $tweet->id ]
+            ])
             ->assertStatus(200);
 
     }
@@ -28,12 +29,17 @@ class FetchTweetsTest extends TestCase
     /** @test */
     public function guests_can_fetch_tweets_from_a_user()
     {
-        $user   = create(User::class);
-        $tweets = create(Tweet::class, [ 'user_id' => $user->id ], 2);
+        $user = create(User::class);
+
+        create(Tweet::class, [ 'user_id' => $user->id ], 2);
 
         $this->json('GET', $user->path() . '/tweets')
-            // ! Fix response
-            // ->assertJson([ 'data' => $tweets->toArray() ])
+            ->assertJson([
+                'data' => [
+                    [ 'type' => 'tweets', 'id' => '1' ],
+                    [ 'type' => 'tweets', 'id' => '2' ],
+                ]
+            ])
             ->assertStatus(200);
         
     }

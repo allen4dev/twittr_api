@@ -31,8 +31,12 @@ class UpdateTweetsTest extends TestCase
         $headers   = [ 'Authorization' => 'Bearer ' . $token ];
 
         $this->json('PATCH', $previousTweet->path(), $newFields, $headers)
-            // ! Fix response
-            // ->assertJson([ 'data' => [ 'body' => $newFields['body'] ]])
+            ->assertJson([
+                'data' => [
+                    'type' => 'tweets',
+                    'attributes' => [ 'body' => $newFields['body'] ]
+                ]
+            ])
             ->assertStatus(200);
 
         $this->assertDatabaseMissing('tweets', [

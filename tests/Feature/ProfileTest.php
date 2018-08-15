@@ -21,11 +21,16 @@ class ProfileTest extends TestCase
     {
         $token = $this->register();
 
-        $this->json('GET', '/api/me', [], ['Authorization' => 'Bearer ' . $token])
-            // ! Fix response
-            // ->assertJson([
-            //     'data' => auth()->user()->toArray(),
-            // ])
+        $this->json('GET', '/api/me', [], [ 'Authorization' => 'Bearer ' . $token ])
+            ->assertJson([
+                'data' => [
+                    'type' => 'users',
+                    'attributes' => [
+                        'username' => auth()->user()->username,
+                        'email' => auth()->user()->email,
+                    ]
+                ],
+            ])
             ->assertStatus(200);
     }
 
@@ -34,14 +39,18 @@ class ProfileTest extends TestCase
     {
         $token = $this->signin();
 
-        $userTweets = create(Tweet::class, [ 'user_id' => auth()->id() ], 2);
-        $otherTweet = create(Tweet::class);
+        create(Tweet::class, [ 'user_id' => auth()->id() ], 2);
+        create(Tweet::class);
 
         $headers = [ 'Authorization' => 'Bearer ' . $token ];
 
         $this->json('GET', '/api/me/tweets', [], $headers)
-            // ! Fix response
-            // ->assertJson([ 'data' => $userTweets->toArray()])
+            ->assertJson([
+                'data' => [
+                    [ 'type' => 'tweets', 'id' => '1' ],
+                    [ 'type' => 'tweets', 'id' => '2' ],
+                ]
+            ])
             ->assertStatus(200);
     }
 
@@ -59,11 +68,11 @@ class ProfileTest extends TestCase
             'tweet_id' => $retweetedTweet->id,
         ]);
 
-        $this->json('GET', 'api/me/tweets');
-            // ->assertJson([ 'data' => [
-            //     $userTweet->toArray(),
-            //     $retweetedTweet->toArray(),
-            // ] ]);
+        $this->json('GET', 'api/me/tweets')
+            ->assertJson([ 'data' => [
+                [ 'type' => 'tweets', 'id' => (string) $userTweet->id  ],
+                [ 'type' => 'tweets', 'id' => (string) $retweetedTweet->id  ],
+            ] ]);
     }
 
     /** @test */
@@ -73,15 +82,20 @@ class ProfileTest extends TestCase
         $headers = [ 'Authorization' => 'Bearer ' . $token ];
 
         $tweetsFavoritedByTheUser = create(Tweet::class, [], 2);
-        $notFavoritedTweet = create(Tweet::class);
+        create(Tweet::class);
 
         $tweetsFavoritedByTheUser->each(function ($tweet) use ($headers) {
             $this->favoriteResource($tweet, $headers);
         });
         
         $this->json('GET', '/api/me/favorites/tweets', [], $headers)
-            // ! Fix response
-            // ->assertJson([ 'data' => $tweetsFavoritedByTheUser->toArray() ])
+            
+            ->assertJson([
+                'data' => [
+                    [ 'type' => 'tweets', 'id' => '1' ],
+                    [ 'type' => 'tweets', 'id' => '2' ],
+                ]
+            ])
             ->assertStatus(200);
     }
 
@@ -92,35 +106,42 @@ class ProfileTest extends TestCase
         $headers = [ 'Authorization' => 'Bearer ' . $token ];
 
         $repliesFavoritedByTheUser = create(Reply::class, [], 2);
-        $notFavoritedReply = create(Reply::class);
+        create(Reply::class);
 
         $repliesFavoritedByTheUser->each(function ($reply) use ($headers) {
             $this->favoriteResource($reply, $headers);
         });
         
         $this->json('GET', '/api/me/favorites/replies', [], $headers)
-            ->assertJson([ 'data' => $repliesFavoritedByTheUser->toArray() ])
+            ->assertJson([
+                'data' => [
+                    [ 'type' => 'replies', 'id' => '1' ],
+                    [ 'type' => 'replies', 'id' => '2' ],
+                ]
+            ])
             ->assertStatus(200);
     }
 
     /** @test */
     public function a_user_can_fetch_his_followers()
     {
-        $userOne = create(User::class);
+        $this->signin();
 
-        $token = $this->signin($userOne);
-        
-        $userTwo = create(User::class);
+        $follower = create(User::class);
 
-        $this->followUser($userTwo, $token);
-        
-        auth()->logout();
-
-        $this->signin($userTwo);
+        DB::table('followers')
+            ->insert([
+                'follower_id'  => $follower->id,
+                'following_id' => auth()->id(),
+            ]);
         
         $this->json('GET', '/api/me/followers')
-            // ! Fix response
-            // ->assertJson([ 'data' => [ $userOne->toArray() ] ])
+            ->assertJson([
+                'data' => [[
+                    'type' => 'users',
+                    'id'   => (string) $follower->id,
+                ]]
+            ])
             ->assertStatus(200);
     }
 
@@ -134,8 +155,9 @@ class ProfileTest extends TestCase
         $this->followUser($followedUser, $token);
 
         $this->json('GET', '/api/me/followings')
-            // ! Fix response
-            // ->assertJson([ 'data' => [ $followedUser->toArray() ] ])
+            ->assertJson([ 'data' => [
+                [ 'type' => 'users', 'id' => (string) $followedUser->id ]
+            ]])
             ->assertStatus(200);
     }
 
@@ -145,21 +167,13 @@ class ProfileTest extends TestCase
         $this->signin();
 
         $tweet = create(Tweet::class, [ 'user_id' => auth()->id() ]);
-        $reply = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
+        create(Reply::class, [ 'tweet_id' => $tweet->id ]);
 
         $this->json('GET', '/api/me/activities')
             ->assertJson([
                 'data' => [
-                    [
-                        'user_id' => auth()->id(),
-                        'subject_id' => $tweet->id,
-                        'type' => 'created_tweet'
-                    ],
-                    [
-                        'user_id' => auth()->id(),
-                        'subject_id' => $reply->id,
-                        'type' => 'created_reply'
-                    ],
+                    [ 'type' => 'activities', 'id' => '1' ],
+                    [ 'type' => 'activities', 'id' => '2' ],
                 ]
             ])->assertStatus(200);
     }
@@ -169,10 +183,15 @@ class ProfileTest extends TestCase
     {
         $this->signin();
 
-        $photos = create(Photo::class, [ 'user_id' => auth()->id() ], 2);
+        create(Photo::class, [ 'user_id' => auth()->id() ], 2);
 
         $this->json('GET', '/api/me/photos')
-            ->assertJson([ 'data' => $photos->toArray() ])
+            ->assertJson([
+                'data' => [
+                    [ 'type' => 'photos', 'id' => '1' ],
+                    [ 'type' => 'photos', 'id' => '2' ],
+                ]
+            ])
             ->assertStatus(200);
     }
 

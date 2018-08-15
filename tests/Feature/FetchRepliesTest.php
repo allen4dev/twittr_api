@@ -18,12 +18,15 @@ class FetchRepliesTest extends TestCase
     {
         $tweet = create(Tweet::class);
         
-        $tweetReplies = create(Reply::class, [ 'tweet_id' => $tweet->id ], 2);
-        $otherReply = create(Reply::class);
+        create(Reply::class, [ 'tweet_id' => $tweet->id ], 2);
+        create(Reply::class);
 
         $this->json('GET', $tweet->path() . '/replies')
             ->assertJson([
-                'data' => $tweetReplies->toArray(),
+                'data' => [
+                    [ 'type' => 'replies', 'id' => '1' ],
+                    [ 'type' => 'replies', 'id' => '2' ],
+                ],
             ])
             ->assertStatus(200);
     }
@@ -35,7 +38,7 @@ class FetchRepliesTest extends TestCase
 
         $this->json('GET', $reply->path())
             ->assertJson([
-                'data' => $reply->toArray()
+                'data' => [ 'type' => 'replies', 'id' => $reply->id ]
             ])
             ->assertStatus(200);
     }

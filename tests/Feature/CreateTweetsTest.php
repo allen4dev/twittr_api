@@ -28,10 +28,9 @@ class CreateTweetsTest extends TestCase
         $tweet = raw(Tweet::class);
         
         $this->json('POST', '/api/tweets', $tweet, ['Authorization' => 'Bearer ' . $token])
-            // ! Fix response
-            // ->assertJson([
-            //     'data' => [ 'body' => $tweet['body'] ]
-            // ])
+            ->assertJson([
+                'data' => [ 'type' => 'tweets', 'id' => '1' ]
+            ])
             ->assertStatus(201);
 
         $this->assertDatabaseHas('tweets', [

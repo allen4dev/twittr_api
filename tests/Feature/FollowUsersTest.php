@@ -27,8 +27,11 @@ class FollowUsersTest extends TestCase
         $userToFollow = create(User::class);
         
         $this->followUser($userToFollow, $token)
-            // ! Fix response
-            // ->assertJson([ 'data' => $userToFollow->toArray() ])
+            
+            ->assertJson([ 'data' => [
+                'type' => 'users',
+                'id'   => (string) $userToFollow->id,
+            ] ])
             ->assertStatus(200);
 
         $this->assertDatabaseHas('followers', [
@@ -67,8 +70,9 @@ class FollowUsersTest extends TestCase
         $this->followUser($user, $token);
 
         $this->json('DELETE', $user->path() . '/unfollow')
-            // ! Fix response
-            // ->assertJson([ 'data' => $user->toArray() ])
+            ->assertJson([
+                'data' => [ 'type' => 'users', 'id' => (string) $user->id ]
+            ])
             ->assertStatus(200);
 
         $this->assertDatabaseMissing('followers', [

@@ -31,8 +31,8 @@ class ReplyTweetsTest extends TestCase
 
         $this->json('POST', $tweet->path() . '/replies', $data, $headers)
             ->assertJson(['data' => [
-                'body'    => $data['body'],
-                'user_id' => auth()->id(),
+                'type'    => 'replies',
+                'attributes' => [ 'body' => $data['body'] ],
             ]])
             ->assertStatus(201);
 

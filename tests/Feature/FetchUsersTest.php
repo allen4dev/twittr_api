@@ -19,13 +19,15 @@ class FetchUsersTest extends TestCase
         $user = create(User::class);
 
         $this->fetchUser($user)
+            ->assertJson([
+                'data' => [ 'type' => 'users', 'id' => (string) $user->id ]
+            ])
             ->assertStatus(200);
     }
 
     /** @test */
     public function a_guest_can_fetch_all_users_who_favorited_a_tweet()
     {
-        $this->withoutExceptionHandling();
         $token = $this->signin();
         
         $tweet = create(Tweet::class);
@@ -35,8 +37,9 @@ class FetchUsersTest extends TestCase
         auth()->logout();
 
         $this->json('GET', $tweet->path() . '/favorited')
-            // ! Fix response
-            // ->assertJson([ 'data' => [ User::first()->toArray() ]])
+            ->assertJson([
+                'data' => [ [ 'type' => 'users', 'id' => '1' ] ]
+            ])
             ->assertStatus(200);
     }
 

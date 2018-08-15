@@ -18,10 +18,15 @@ class FetchUserPhotosTest extends TestCase
     {
         $user = create(User::class);
 
-        $photos = create(Photo::class, [ 'user_id' => $user->id ], 2);
+        create(Photo::class, [ 'user_id' => $user->id ], 2);
 
         $this->json('GET', $user->path() . '/photos')
-            ->assertJson([ 'data' => $photos->toArray() ])
+            ->assertJson([
+                'data' => [
+                    [ 'type' => 'photos', 'id' => '1' ],
+                    [ 'type' => 'photos', 'id' => '2' ],
+                ]
+            ])
             ->assertStatus(200);
     }
 }

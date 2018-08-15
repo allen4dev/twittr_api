@@ -43,7 +43,7 @@ class RecordActivitiesTest extends TestCase
 
         $this->assertDatabaseHas('activities', [
             'user_id'      => auth()->id(),
-            'type'         => 'created_reply',
+            'action'       => 'created_reply',
             'subject_id'   => 1,
             'subject_type' => 'App\Reply',
         ]);

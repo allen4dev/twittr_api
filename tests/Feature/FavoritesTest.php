@@ -23,14 +23,14 @@ class FavoritesTest extends TestCase
     /** @test */
     public function a_user_can_favorite_a_tweet()
     {
-        $this->withoutExceptionHandling();
         $token = $this->signin();
 
         $tweet = create(Tweet::class);
 
         $this->favoriteResource($tweet, $token)
-            // ! Fix response
-            // ->assertJson([ 'data' => $tweet->toArray() ])
+            ->assertJson([
+                'data' => [ 'type' => 'tweets', 'id' => (string) $tweet->id ]
+            ])
             ->assertStatus(200);
 
         $this->assertDatabaseHas('favorites', [
@@ -70,8 +70,9 @@ class FavoritesTest extends TestCase
         $this->favoriteResource($tweet, $token);
 
         $this->json('DELETE', $tweet->path() . '/unfavorite', [], $headers)
-            // ! Fix response
-            // ->assertJson([ 'data' => $tweet->toArray() ])
+            ->assertJson([
+                'data' => [ 'type' => 'tweets', 'id' => (string) $tweet->id ]
+            ])
             ->assertStatus(200);
 
         $this->assertDatabaseMissing('favorites', [
@@ -88,7 +89,9 @@ class FavoritesTest extends TestCase
         $reply = create(Reply::class);
 
         $this->favoriteResource($reply, $token)
-            ->assertJson([ 'data' => $reply->toArray() ])
+            ->assertJson([
+                'data' => [ 'type' => 'replies', 'id' => (string) $reply->id ]
+            ])
             ->assertStatus(200);
 
         $this->assertDatabaseHas('favorites', [
@@ -99,14 +102,7 @@ class FavoritesTest extends TestCase
         ]);
     }
 
-    public function favoriteResource($resource, $token)
-    {
-        $headers = [ 'Authorization' => 'Bearer ' . $token ];
-
-        return $this->json('POST', $resource->path() . '/favorite', [], $headers);
-    }
-
-    /** @test */
+     /** @test */
     public function a_user_can_unfavorite_a_reply()
     {
         $token = $this->signin();
@@ -118,7 +114,9 @@ class FavoritesTest extends TestCase
         $this->favoriteResource($reply, $token);
 
         $this->json('DELETE', $reply->path() . '/unfavorite', [], $headers)
-            ->assertJson([ 'data' => $reply->toArray() ])
+            ->assertJson([
+                'data' => [ 'type' => 'replies', 'id' => (string) $reply->id ]
+            ])
             ->assertStatus(200);
 
         $this->assertDatabaseMissing('favorites', [
@@ -126,5 +124,12 @@ class FavoritesTest extends TestCase
             'favorited_id' => $reply->id,
             'favorited_type' => Reply::class,
         ]);
+    }
+
+    public function favoriteResource($resource, $token)
+    {
+        $headers = [ 'Authorization' => 'Bearer ' . $token ];
+
+        return $this->json('POST', $resource->path() . '/favorite', [], $headers);
     }
 }
