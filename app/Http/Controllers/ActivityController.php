@@ -10,7 +10,7 @@ class ActivityController extends Controller
 {
     public function index()
     {
-        $activities = auth()->user()->activities;
+        $activities = auth()->user()->activities()->paginate();
 
         return new ActivityCollection($activities);
     }

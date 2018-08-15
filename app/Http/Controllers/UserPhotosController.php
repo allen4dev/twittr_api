@@ -13,9 +13,9 @@ class UserPhotosController extends Controller
 {
     public function index()
     {
-        $photos = auth()->user()->photos;
+        $photos = auth()->user()->photos()->paginate();
 
-        return PhotoResource::collection($photos);
+        return new PhotoCollection($photos, auth()->user());
     }
 
     public function show(User $user)

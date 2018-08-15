@@ -10,7 +10,7 @@ class FollowersController extends Controller
 {
     public function index()
     {
-        $followers = auth()->user()->followers;
+        $followers = auth()->user()->followers()->paginate();
 
         return new UserCollection($followers);
     }

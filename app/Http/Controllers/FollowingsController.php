@@ -10,7 +10,7 @@ class FollowingsController extends Controller
 {
     public function index()
     {
-        $followings = auth()->user()->followings;
+        $followings = auth()->user()->followings()->paginate();
 
         return UserResource::collection($followings);
     }
