@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Resources\UserResource;
-use App\Http\Resources\TweetResource;
+use App\Http\Resources\TweetCollection;
 
 class ProfileController extends Controller
 {
@@ -17,7 +17,7 @@ class ProfileController extends Controller
 
         $tweets = $userTweets->merge($retweetedTweets);
 
-        return TweetResource::collection($tweets);
+        return new TweetCollection($tweets);
     }
 
     public function show()

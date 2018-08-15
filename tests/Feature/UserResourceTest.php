@@ -28,6 +28,7 @@ class UserResourceTest extends TestCase
                         'username' => $user->username,
                         'email' => $user->email,
                         'fullname' => $user->fullname,
+                        'avatar_url' => $user->avatar_url,
                         'profile_image' => $user->profile_image,
                         'contact_info' => $user->contact_info,
                     ]

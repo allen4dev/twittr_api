@@ -18,11 +18,12 @@ class UserResource extends JsonResource
             'type' => 'users',
             'id'   => (string) $this->id,
             'attributes' => [
-                'username' => $this->username,
-                'email' => $this->email,
-                'fullname' => $this->fullname,
+                'username'      => $this->username,
+                'email'         => $this->email,
+                'avatar_url'    => $this->avatar_url,
+                'fullname'      => $this->fullname,
                 'profile_image' => $this->profile_image,
-                'contact_info' => $this->contact_info,
+                'contact_info'  => $this->contact_info,
             ],
             'links' => [
                 'related' => route('users.show', ['user' => $this->id]),

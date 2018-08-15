@@ -91,6 +91,35 @@ class TweetResourceTest extends TestCase
             ]);
     }
 
+    /** @test */
+    public function a_collection_should_contain_a_list_of_tweet_resources_under_a_data_object()
+    {
+        $user = create(User::class);
+
+        $tweet1 = create(Tweet::class, [ 'user_id' => $user->id ]);
+        $tweet2 = create(Tweet::class, [ 'user_id' => $user->id ]);
+
+        $this->json('GET', $user->path() . '/tweets')
+            ->assertJson([
+                'data' => [
+                    [
+                        'type' => 'tweets',
+                        'id'   => (string) $tweet1->id,
+                        'attributes' => [
+                            'body' => $tweet1->body,
+                        ]
+                    ],
+                    [
+                        'type' => 'tweets',
+                        'id'   => (string) $tweet2->id,
+                        'attributes' => [
+                            'body' => $tweet2->body,
+                        ]
+                    ],
+                ]
+            ]);
+    }
+
     public function fetchTweet($tweet)
     {
         return $this->json('GET', $tweet->path());

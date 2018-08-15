@@ -57,6 +57,7 @@ class ProfileTest extends TestCase
     /** @test */
     public function a_user_also_receives_retweeted_tweets_when_fetch_his_tweets()
     {
+        $this->withoutExceptionHandling();
         $this->signin();
         
         $userTweet = create(Tweet::class, [ 'user_id' => auth()->id() ]);
