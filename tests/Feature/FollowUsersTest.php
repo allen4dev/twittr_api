@@ -27,7 +27,6 @@ class FollowUsersTest extends TestCase
         $userToFollow = create(User::class);
         
         $this->followUser($userToFollow, $token)
-            
             ->assertJson([ 'data' => [
                 'type' => 'users',
                 'id'   => (string) $userToFollow->id,

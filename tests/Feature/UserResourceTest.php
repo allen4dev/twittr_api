@@ -6,6 +6,8 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Illuminate\Support\Facades\DB;
+
 use App\Http\Resources\UserIdentifierResource;
 
 use App\User;
@@ -46,6 +48,35 @@ class UserResourceTest extends TestCase
                 'data' => [
                     'links' => [
                         'related' => route('users.show', ['user' => $user->id])
+                    ]
+                ]
+            ]);
+    }
+
+    /** @test */
+    public function a_collection_should_contain_a_list_of_user_resources_under_a_data_object()
+    {
+        $this->signin();
+
+        $follower = create(User::class);
+
+        DB::table('followers')
+            ->insert([
+                'follower_id'  => $follower->id,
+                'following_id' => auth()->id(),
+            ]);
+
+        $this->json('GET', '/api/me/followers')
+            ->assertJson([
+                'data' => [
+                    [
+                        'type' => 'users',
+                        'id'   => (string) $follower->id,
+                        'attributes' => [
+                            'username'      => $follower->username,
+                            'email'         => $follower->email,
+                            // more info
+                        ]
                     ]
                 ]
             ]);

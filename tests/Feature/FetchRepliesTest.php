@@ -16,6 +16,7 @@ class FetchRepliesTest extends TestCase
     /** @test */
     public function guests_can_fetch_replies_for_a_tweet()
     {
+        $this->withoutExceptionHandling();
         $tweet = create(Tweet::class);
         
         create(Reply::class, [ 'tweet_id' => $tweet->id ], 2);
