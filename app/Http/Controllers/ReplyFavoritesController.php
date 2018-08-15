@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Resources\ReplyResource;
+use App\Http\Resources\ReplyCollection;
 
 use App\Reply;
 
@@ -14,7 +15,7 @@ class ReplyFavoritesController extends Controller
     {
         $replies = auth()->user()->favorites()->whereType('reply')->get()->map->favorited;
 
-        return ReplyResource::collection($replies);
+        return new ReplyCollection($replies->paginate(), $replies->first()->tweet);
     }
 
     public function store(Reply $reply)

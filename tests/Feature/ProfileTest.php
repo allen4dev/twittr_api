@@ -37,6 +37,7 @@ class ProfileTest extends TestCase
     /** @test */
     public function a_user_can_fetch_his_tweets()
     {
+        $this->withoutExceptionHandling();
         $token = $this->signin();
 
         create(Tweet::class, [ 'user_id' => auth()->id() ], 2);
@@ -57,7 +58,6 @@ class ProfileTest extends TestCase
     /** @test */
     public function a_user_also_receives_retweeted_tweets_when_fetch_his_tweets()
     {
-        $this->withoutExceptionHandling();
         $this->signin();
         
         $userTweet = create(Tweet::class, [ 'user_id' => auth()->id() ]);
@@ -103,6 +103,7 @@ class ProfileTest extends TestCase
     /** @test */
     public function a_user_can_fetch_his_favorited_replies()
     {
+        $this->withoutExceptionHandling();
         $token = $this->signin();
         $headers = [ 'Authorization' => 'Bearer ' . $token ];
 

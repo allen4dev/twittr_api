@@ -17,7 +17,7 @@ class ProfileController extends Controller
 
         $tweets = $userTweets->merge($retweetedTweets);
 
-        return new TweetCollection($tweets);
+        return new TweetCollection($tweets->paginate());
     }
 
     public function show()

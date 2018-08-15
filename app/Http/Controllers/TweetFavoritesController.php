@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Resources\TweetResource;
+use App\Http\Resources\TweetCollection;
 use App\Http\Resources\UserResource;
 
 use App\Tweet;
@@ -16,7 +17,7 @@ class TweetFavoritesController extends Controller
     {
         $tweets = auth()->user()->favorites()->whereType('tweet')->get()->map->favorited;
 
-        return TweetResource::collection($tweets);
+        return new TweetCollection($tweets->paginate());
     }
 
     public function show(Tweet $tweet)

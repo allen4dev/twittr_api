@@ -25,7 +25,9 @@ class UserPhotosController extends Controller
 
     public function store(User $user)
     {
-        // ToDo: validate the request
+        request()->validate([
+            'photos.*' => 'required|image',
+        ]);
 
         array_map(function ($photo) use ( $user ) {
             $path = $photo->store('photos/' . $user->id, 'public');
