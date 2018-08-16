@@ -52,7 +52,7 @@ class Handler extends ExceptionHandler
         if ($request->expectsJson()) {
             // return response()->json(['error' => get_class($exception)]);
             if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
-                return response()->json(['error' => 'model not found']);
+                return Response::modelNotFound($exception);
             }
 
             if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
@@ -69,12 +69,8 @@ class Handler extends ExceptionHandler
 
     protected function unauthenticated($request, AuthenticationException $exception)
     {
-        $status = 401;
-        $title  = 'Unauthenticated';
-        $detail  = 'This action is only allowed to authenticated members';
-
         return $request->expectsJson()
-            ? Response::formatError($status, $title, $detail)
+            ? Response::unauthenticated()
             : redirect()->guest(route('login'));
     }
 }

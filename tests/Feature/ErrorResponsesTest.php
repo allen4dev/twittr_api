@@ -22,4 +22,26 @@ class ErrorResponsesTest extends TestCase
                 ]
             ])->assertStatus(401);
     }
+
+    /** @test */
+    public function try_to_get_a_non_existing_resource_should_return_a_model_not_found_error_with_a_404_status_code()
+    {
+        $this->json('GET', '/api/tweets/999')
+            ->assertExactJson([
+                'errors' => [
+                    'status' => '404',
+                    'title'  => 'Model not found',
+                    'detail' => "Tweet with that id does not exist",
+                ]
+            ])->assertStatus(404);
+                    
+        $this->json('GET', '/api/replies/999')
+            ->assertExactJson([
+                'errors' => [
+                    'status' => '404',
+                    'title'  => 'Model not found',
+                    'detail' => "Reply with that id does not exist",
+                ]
+            ])->assertStatus(404);
+    }
 }
