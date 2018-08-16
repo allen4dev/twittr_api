@@ -62,4 +62,17 @@ class ErrorResponsesTest extends TestCase
                 ]
             ])->assertStatus(403);                   
     }
+
+    /** @test */
+    public function try_to_get_a_non_existing_endpoint_should_return_a_not_fount_error_with_a_404_status_code()
+    {
+        $this->json('GET', '/api/invalid/endpoint')
+            ->assertExactJson([
+                'errors' => [
+                    'status' => '404',
+                    'title'  => 'Not Found',
+                    'detail' => "The resource you are fetching does not exist",
+                ]
+            ])->assertStatus(404);
+    }
 }

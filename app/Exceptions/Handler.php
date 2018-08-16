@@ -60,7 +60,7 @@ class Handler extends ExceptionHandler
             }
 
             if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-                return response()->json(['error' => '404 not found']);                
+                return Response::notFound();                
             }
         }
 
