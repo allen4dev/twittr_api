@@ -56,7 +56,7 @@ class Handler extends ExceptionHandler
             }
 
             if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
-                return response()->json(['error' => 'Unauthorized action']);
+                return Response::unauthorized();
             }
 
             if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {

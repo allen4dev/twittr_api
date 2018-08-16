@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 
-use App\Http\Responses;
+use App\Http\Response;
 use App\Http\Requests\RegisterRequest;
 
 use JWTAuth;
@@ -22,7 +22,7 @@ class AuthController extends Controller
 
         $statusCode = 201;
 
-        return Responses::format(
+        return Response::format(
             [ "token" => $token ],
             $statusCode
         );
@@ -38,9 +38,9 @@ class AuthController extends Controller
         $credentials = request()->only([ 'email', 'password' ]);
 
         if (! $token = auth()->attempt($credentials)) {
-            return Responses::format(null, 400, [ "message" => "Invalid credentials" ]);
+            return Response::format(null, 400, [ "message" => "Invalid credentials" ]);
         }
 
-        return Responses::format(compact('token'), 200);
+        return Response::format(compact('token'), 200);
     }
 }

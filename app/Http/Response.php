@@ -2,8 +2,6 @@
 
 namespace App\Http;
 
-use Exception;
-
 // ToDo: Refactor to a more suitable Dessign Pattern
 class Response {
 
@@ -33,6 +31,14 @@ class Response {
     $statusCode = 404;
     $title      = 'Model not found';
     $detail     = "{$modelName} with that id does not exist";
+
+    return (new self)->createErrorResponse($statusCode, $title, $detail);
+  }
+
+  static function unauthorized() {
+    $statusCode = 403;
+    $title      = 'Forbidden';
+    $detail     = "You are not authorized to perform this action";
 
     return (new self)->createErrorResponse($statusCode, $title, $detail);
   }
