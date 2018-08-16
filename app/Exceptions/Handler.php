@@ -4,6 +4,9 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Auth\AuthenticationException;
+
+use App\Http\Response;
 
 class Handler extends ExceptionHandler
 {
@@ -46,13 +49,32 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        // ToDo: Send a custom response with error details
-        // if ($request->expectsJson()) {
-        //     if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
-        //         return response()->json([], 403);
-        //     }
-        // }
+        if ($request->expectsJson()) {
+            // return response()->json(['error' => get_class($exception)]);
+            if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+                return response()->json(['error' => 'model not found']);
+            }
+
+            if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
+                return response()->json(['error' => 'Unauthorized action']);
+            }
+
+            if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+                return response()->json(['error' => '404 not found']);                
+            }
+        }
 
         return parent::render($request, $exception);
+    }
+
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        $status = 401;
+        $title  = 'Unauthenticated';
+        $detail  = 'This action is only allowed to authenticated members';
+
+        return $request->expectsJson()
+            ? Response::formatError($status, $title, $detail)
+            : redirect()->guest(route('login'));
     }
 }
