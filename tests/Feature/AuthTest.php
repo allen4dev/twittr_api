@@ -23,7 +23,7 @@ class AuthTest extends TestCase
         ];
 
         $this->json('POST', '/api/auth/register', $user)
-            ->assertJsonStructure([ 'data' => [ 'token' ]])
+            ->assertJsonStructure([ 'data' => [ 'id', 'token' ]])
             ->assertStatus(201);
     
         // $this->assertTrue(array_key_exists('token', $response->original['data']));

@@ -23,7 +23,10 @@ class AuthController extends Controller
         $statusCode = 201;
 
         return Response::format(
-            [ "token" => $token ],
+            [
+                "id" => $user->id,
+                "token" => $token
+            ],
             $statusCode
         );
     }
