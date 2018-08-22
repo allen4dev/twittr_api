@@ -45,7 +45,7 @@ class AuthController extends Controller
         }
         
         return Response::format([
-            'id' => auth()->id(),
+            'id' => (string) auth()->id(),
             'token' => $token
         ], 200);
     }
