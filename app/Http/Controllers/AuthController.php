@@ -43,7 +43,10 @@ class AuthController extends Controller
         if (! $token = auth()->attempt($credentials)) {
             return Response::format(null, 400, [ "message" => "Invalid credentials" ]);
         }
-
-        return Response::format(compact('token'), 200);
+        
+        return Response::format([
+            'id' => auth()->id(),
+            'token' => $token
+        ], 200);
     }
 }

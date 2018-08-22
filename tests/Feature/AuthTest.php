@@ -49,7 +49,7 @@ class AuthTest extends TestCase
             "email" => $credentials['email'],
             "password" => $credentials['password'],
         ])
-            ->assertJsonStructure([ 'data' => [ 'token' ]])            
+            ->assertJsonStructure([ 'data' => [ 'id', 'token' ]])            
             ->assertStatus(200);
 
         // $this->assertTrue(array_key_exists('token', $response->original['data']));
