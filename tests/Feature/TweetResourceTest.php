@@ -67,31 +67,6 @@ class TweetResourceTest extends TestCase
     }
 
     /** @test */
-    public function it_should_contain_a_included_object_at_the_same_level_of_data_with_a_user_resource()
-    {
-        $user  = create(User::class);
-        $tweet = create(Tweet::class, [ 'user_id' => $user->id ]);
-
-        $this->fetchTweet($tweet)
-            ->assertJson([
-                'included' => [[
-                    'type' => 'users',
-                    'id'   => (string) $user->id,
-                    'attributes' => [
-                        'username' => $user->username,
-                        'email' => $user->email,
-                        'fullname' => $user->fullname,
-                        'profile_image' => $user->profile_image,
-                        'contact_info' => $user->contact_info,
-                    ],
-                    'links' => [
-                        'related' => route('users.show', ['user' => $user->id]),
-                    ]
-                ]]
-            ]);
-    }
-
-    /** @test */
     public function a_collection_should_contain_a_list_of_tweet_resources_under_a_data_object()
     {
         $user = create(User::class);

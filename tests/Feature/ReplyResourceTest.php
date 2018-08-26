@@ -69,29 +69,6 @@ class ReplyResourceTest extends TestCase
     }
 
     /** @test */
-    public function it_should_contain_a_included_object_at_the_same_level_of_data_with_a_tweet_resource()
-    {
-        $this->withoutExceptionHandling();
-
-        $tweet = create(Tweet::class);
-        $reply  = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
-
-        $this->fetchReply($reply)
-            ->assertJson([
-                'included' => [[
-                    'type' => 'tweets',
-                    'id'   => (string) $tweet->id,
-                    'attributes' => [
-                        'body' => $tweet->body,
-                    ],
-                    'links' => [
-                        'related' => route('tweets.show', ['tweet' => $tweet->id]),
-                    ]
-                ]]
-            ]);
-    }
-
-    /** @test */
     public function a_collection_should_contain_a_list_of_reply_resources_under_a_data_object()
     {
         $this->withoutExceptionHandling();

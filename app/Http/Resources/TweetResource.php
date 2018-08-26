@@ -26,23 +26,4 @@ class TweetResource extends JsonResource
             'relationships' => new TweetRelationshipResource($this->user)
         ];
     }
-
-    public function with($request)
-    {
-        // Add values to include here
-        $included = [ $this->user ];
-
-        return [
-            'included' => $this->withIncluded($included),
-        ];
-    }
-
-    public function withIncluded($includes)
-    {
-        return collect($includes)->map(function ($resource) {
-            if ($resource instanceof User) {
-                return new UserResource($resource);
-            }
-        });
-    }
 }

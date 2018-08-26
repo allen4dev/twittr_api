@@ -31,24 +31,4 @@ class ReplyResource extends JsonResource
             'relationships' => new ReplyRelationshipsResource($this->tweet),
         ];
     }
-
-    public function with($request)
-    {
-        // Add values to include here
-        $included = [ $this->tweet ];
-
-        return [
-            'included' => $this->withIncluded($included),
-        ];
-    }
-
-    // ! Code duplication shared between resources, extract to his own module
-    public function withIncluded($includes)
-    {
-        return collect($includes)->map(function ($resource) {
-            if ($resource instanceof Tweet) {
-                return new TweetResource($resource);
-            }
-        });
-    }
 }
