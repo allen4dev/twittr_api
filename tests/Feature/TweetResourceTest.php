@@ -66,6 +66,26 @@ class TweetResourceTest extends TestCase
             ]);
     }
 
+     /** @test */
+    public function it_should_contain_a_user_resource_under_a_included_object_at_the_same_level_of_the_data_object()
+    {
+        $user = create(User::class);
+        $tweet = create(Tweet::class, [ 'user_id' => $user->id ]);
+
+        $this->json('GET', $tweet->path())
+            ->assertJson([
+                'included' => [
+                    'type' => 'users',
+                    'id'   => (string) $user->id,
+                    'attributes' => [
+                        'username' => $user->username,
+                        'email' => $user->email,
+                        // more user fields
+                    ]
+                ]
+            ]);
+    }
+
     /** @test */
     public function a_collection_should_contain_a_list_of_tweet_resources_under_a_data_object()
     {
