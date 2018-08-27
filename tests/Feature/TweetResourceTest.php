@@ -115,6 +115,39 @@ class TweetResourceTest extends TestCase
             ]);
     }
 
+    /** @test */
+    public function a_collection_should_also_contain_the_authors_of_the_tweets_under_a_included_object_at_the_same_level_of_data()
+    {
+        $user1 = create(User::class, []);
+        $user2 = create(User::class, []);
+        $tweet1 = create(Tweet::class, [ 'user_id' => $user1->id]);
+        $tweet2 = create(Tweet::class, [ 'user_id' => $user2->id]);
+
+        $this->json('GET', '/api/tweets')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'users',
+                        'id'   => (string) $user1->id,
+                        'attributes' => [
+                            'username' => $user1->username,
+                            'email'    => $user1->email,
+                            // more fields
+                        ]
+                    ],
+                    [
+                        'type' => 'users',
+                        'id'   => (string) $user2->id,
+                        'attributes' => [
+                            'username' => $user2->username,
+                            'email'    => $user2->email,
+                            // more fields
+                        ]
+                    ],
+                ]
+            ]);
+    }
+
     public function fetchTweet($tweet)
     {
         return $this->json('GET', $tweet->path());

@@ -12,7 +12,7 @@ Route::prefix('me')->group(function () {
   Route::post('/avatar', 'AvatarController@store')->middleware('auth:api');
   
   Route::get('/tweets', 'ProfileController@index')->middleware('auth:api');
-  
+
   Route::get('/favorites/replies', 'ReplyFavoritesController@index')->middleware('auth:api');
   Route::get('/favorites/tweets', 'TweetFavoritesController@index')->middleware('auth:api');
 
@@ -38,6 +38,7 @@ Route::prefix('users')->group(function () {
 });
 
 Route::prefix('tweets')->group(function () {
+  Route::get('/', 'TweetController@index');
   Route::post('/', 'TweetController@store')->middleware('auth:api');
   
   Route::get('/{tweet}', 'TweetController@show')->name('tweets.show');

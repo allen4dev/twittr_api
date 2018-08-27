@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 use App\Http\Resources\TweetResource;
+use App\Http\Resources\TweetCollection;
 
 use App\Http\Responses;
 
@@ -13,6 +14,13 @@ use App\Tweet;
 
 class TweetController extends Controller
 {
+    public function index()
+    {   
+        $tweets = Tweet::latest()->paginate();
+
+        return new TweetCollection($tweets);
+    }
+
     public function show(Tweet $tweet)
     {
         return new TweetResource($tweet);
