@@ -69,6 +69,31 @@ class FetchUsersTest extends TestCase
             ->assertStatus(200);
     }
 
+    /** @test */
+    public function a_guest_can_fetch_all_users_who_a_user_is_following()
+    {
+        $user = create(User::class);
+
+        $followedUser1 = create(User::class);
+        $followedUser2 = create(User::class);
+
+        $values = [
+            [ 'follower_id' => $user->id, 'following_id' => $followedUser1->id ],
+            [ 'follower_id' => $user->id, 'following_id' => $followedUser2->id ],
+        ];
+
+        DB::table('followers')->insert($values);
+
+        $this->json('GET', $user->path() . '/followings')
+            ->assertJson([
+                'data' => [
+                    [ 'type' => 'users', 'id' => (string) $followedUser1->id ],
+                    [ 'type' => 'users', 'id' => (string) $followedUser2->id ],
+                ],
+            ])
+            ->assertStatus(200);
+    }
+
     public function fetchUser($user)
     {
         return $this->json('GET', $user->path());

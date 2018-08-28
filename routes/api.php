@@ -17,7 +17,7 @@ Route::prefix('me')->group(function () {
   Route::get('/favorites/tweets', 'TweetFavoritesController@index')->middleware('auth:api');
 
   Route::get('/followers', 'ProfileFollowersController@index')->middleware('auth:api');
-  Route::get('/followings', 'FollowingsController@index')->middleware('auth:api');
+  Route::get('/followings', 'ProfileFollowingsController@index')->middleware('auth:api');
 
   Route::get('/activities', 'ActivityController@index')->middleware('auth:api')->name('activities');
   
@@ -31,6 +31,7 @@ Route::prefix('users')->group(function () {
   Route::get('/{user}/tweets', 'UserTweetsController@index');
   Route::get('/{user}/photos', 'UserPhotosController@show')->name('users.photos');
   Route::get('/{user}/followers', 'UserFollowersController@index');
+  Route::get('/{user}/followings', 'UserFollowingsController@index');
 
   Route::post('/{user}/follow', 'FollowUserController@store')->middleware('auth:api');
   Route::delete('/{user}/unfollow', 'FollowUserController@destroy')->middleware('auth:api');

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Resources\UserResource;
 
-class FollowingsController extends Controller
+class ProfileFollowingsController extends Controller
 {
     public function index()
     {
