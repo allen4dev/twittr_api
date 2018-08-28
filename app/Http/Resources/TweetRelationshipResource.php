@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use App\Http\Resources\ReplyIdentifierResource;
+
 class TweetRelationshipResource extends JsonResource
 {
     /**
@@ -17,9 +19,12 @@ class TweetRelationshipResource extends JsonResource
         return [
             "user" => [
                 "links" => [
-                    "related" => route('users.show', [ 'id' => $this->id ])
+                    "related" => route('users.show', [ 'id' => $this->user->id ])
                 ],
-                "data" => new UserIdentifierResource($this),
+                "data" => new UserIdentifierResource($this->user),
+            ],
+            "replies" => [
+                "data" => ReplyIdentifierResource::collection($this->replies),
             ]
         ];
     }

@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use App\Reply;
 use App\Tweet;
 use App\User;
 
@@ -81,6 +82,34 @@ class TweetResourceTest extends TestCase
                         'username' => $user->username,
                         'email' => $user->email,
                         // more user fields
+                    ]
+                ]
+            ]);
+    }
+
+    /** @test */
+    public function it_should_contain_a_relationships_object_containing_a_replies_resource_identifier_under_a_data_object()
+    {
+        $tweet = create(Tweet::class);
+        $reply1 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
+        $reply2 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
+
+        $this->json('GET', $tweet->path())
+            ->assertJson([
+                'data' => [
+                    'relationships' => [
+                        'replies' => [
+                            'data' => [
+                                [
+                                    'type' => 'replies',
+                                    'id'   => (string) $reply1->id,
+                                ],
+                                [
+                                    'type' => 'replies',
+                                    'id'   => (string) $reply2->id,
+                                ],
+                            ]
+                        ]
                     ]
                 ]
             ]);
