@@ -67,26 +67,6 @@ class TweetResourceTest extends TestCase
             ]);
     }
 
-     /** @test */
-    public function it_should_contain_a_user_resource_under_a_included_object_at_the_same_level_of_the_data_object()
-    {
-        $user = create(User::class);
-        $tweet = create(Tweet::class, [ 'user_id' => $user->id ]);
-
-        $this->json('GET', $tweet->path())
-            ->assertJson([
-                'included' => [
-                    'type' => 'users',
-                    'id'   => (string) $user->id,
-                    'attributes' => [
-                        'username' => $user->username,
-                        'email' => $user->email,
-                        // more user fields
-                    ]
-                ]
-            ]);
-    }
-
     /** @test */
     public function it_should_contain_a_relationships_object_containing_a_replies_resource_identifier_under_a_data_object()
     {
@@ -112,6 +92,47 @@ class TweetResourceTest extends TestCase
                         ]
                     ]
                 ]
+            ]);
+    }
+
+    /** @test */
+    public function it_should_contain_a_user_resouce_and_a_replies_collection_under_a_included_object_at_the_same_level_of_the_data_object()
+    {
+        $user  = create(User::class);
+        $tweet = create(Tweet::class, [ 'user_id' => $user->id ]);
+
+        $reply1 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
+        $reply2 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
+
+        $this->json('GET', $tweet->path())
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'users',
+                        'id'   => (string) $user->id,
+                        'attributes' => [
+                            'username' => $user->username,
+                            'email' => $user->email,
+                            // more user fields
+                        ]
+                    ],
+                    [
+                        'type' => 'replies',
+                        'id'   => (string) $reply1->id,
+                        'attributes' => [
+                            'body' => $reply1->body,
+                            // more fields
+                        ]
+                    ],
+                    [
+                        'type' => 'replies',
+                        'id'   => (string) $reply2->id,
+                        'attributes' => [
+                            'body' => $reply2->body,
+                            // more fields
+                        ]
+                    ],
+                ]  
             ]);
     }
 

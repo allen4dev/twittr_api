@@ -3,11 +3,14 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
 
 use App\Http\Resources\TweetRelationshipResource;
 
+use App\Http\Resources\ReplyResource;
 use App\Http\Resources\UserResource;
 
+use App\Reply;
 use App\User;
 
 class TweetResource extends JsonResource
@@ -29,8 +32,27 @@ class TweetResource extends JsonResource
 
     public function with($request)
     {
+        $user = collect([ $this->resource->user ]);
+        $replies = $this->resource->replies;
+        // Merge more collections to include
+        // Ex: $users->merge($comments)->unique();
+        $includes = $user->merge($replies)->unique();
+
         return [
-            'included' => new UserResource($this->resource->user),
+            'included' => $this->withIncluded($includes),
         ];
+    }
+
+    public function withIncluded(Collection $included)
+    {
+        return $included->map(function ($include) {
+            if ($include instanceof User) {
+                return new UserResource($include);
+            }
+            
+            if ($include instanceof Reply) {
+                return new ReplyResource($include);
+            }
+        });
     }
 }

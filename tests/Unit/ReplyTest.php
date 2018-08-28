@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Reply;
 use App\Tweet;
+use App\User;
 
 class ReplyTest extends TestCase
 {
@@ -27,5 +28,13 @@ class ReplyTest extends TestCase
         $reply = create(Reply::class);
 
         $this->assertInstanceOf(Tweet::class, $reply->tweet);
+    }
+
+    /** @test */
+    public function a_reply_belongs_to_a_user()
+    {
+        $reply = create(Reply::class);
+
+        $this->assertInstanceOf(User::class, $reply->user);
     }
 }
