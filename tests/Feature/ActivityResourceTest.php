@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Activity;
+use App\Reply;
 use App\Tweet;
 use App\User;
 
@@ -58,6 +59,28 @@ class ActivityResourceTest extends TestCase
         $this->fetchUserActivities()
             ->assertJson([
                 'links' => [ 'self' => route('activities') ]
+            ]);
+    }
+
+    /** @test */
+    public function a_collection_should_also_contain_the_activities_author_under_a_includes_object_at_the_same_level_of_the_data_object()
+    {
+        $this->signin();
+
+        create(Tweet::class, [ 'user_id' => auth()->id() ]);
+        create(Reply::class, [ 'user_id' => auth()->id() ]);
+
+        $this->fetchUserActivities()
+            ->assertJson([
+                'included' => [[
+                    'type' => 'users',
+                    'id'   => (string) auth()->id(),
+                    'attributes' => [
+                        'username' => auth()->user()->username,
+                        'email' => auth()->user()->email,
+                        // more user data
+                    ]
+                ]]
             ]);
     }
 

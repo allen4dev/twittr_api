@@ -25,6 +25,9 @@ class ActivityCollection extends ResourceCollection
     {
         return [
             'links' => [ 'self' => route('activities') ],
+            'included' => [
+                new UserResource($this->collection->first()->user)
+            ]
         ];
     }
 }
