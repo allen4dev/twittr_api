@@ -34,8 +34,7 @@ class TweetResource extends JsonResource
     {
         $user = collect([ $this->resource->user ]);
         $replies = $this->resource->replies;
-        // Merge more collections to include
-        // Ex: $users->merge($comments)->unique();
+
         $includes = $user->merge($replies)->unique();
 
         return [

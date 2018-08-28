@@ -113,6 +113,27 @@ class ReplyResourceTest extends TestCase
             ]);
     }
 
+    /** @test */
+    public function a_collection_should_contain_a_tweet_resource_under_a_included_object_at_the_same_level_of_the_data_object()
+    {
+        $tweet = create(Tweet::class);
+
+        $replie1 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
+        $replie2 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
+
+        $this->fetchTweetReplies($tweet)
+            ->assertJson([
+                'included' => [[
+                    'type' => 'tweets',
+                    'id'   => (string) $tweet->id,
+                    'attributes' => [
+                        'body' => $tweet->body,
+                        // more data
+                    ]
+                ]]
+            ]);
+    }
+
     public function fetchReply($reply)
     {
         return $this->json('GET', $reply->path());

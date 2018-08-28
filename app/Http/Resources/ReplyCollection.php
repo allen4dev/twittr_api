@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 use App\Http\Resources\ReplyResource;
+use App\Http\Resources\TweetResource;
 
 use App\Tweet;
 
@@ -34,7 +35,10 @@ class ReplyCollection extends ResourceCollection
     public function with($request)
     {
         return [
-            'links' => [ 'self' => route('tweets.replies', [ 'tweet' => $this->tweet->id ]) ]
+            'links' => [ 'self' => route('tweets.replies', [ 'tweet' => $this->tweet->id ]) ],
+            'included' => [
+                new TweetResource($this->tweet),
+            ],
         ];
     }
 }
