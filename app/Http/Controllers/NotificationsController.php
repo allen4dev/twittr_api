@@ -22,4 +22,13 @@ class NotificationsController extends Controller
 
         return new NotificationResource($notification);
     }
+
+    public function destroy($id)
+    {
+        $notification = auth()->user()->notifications()->findOrFail($id);
+
+        $notification->markAsRead();
+
+        return response()->json()->setStatusCode(204);
+    }
 }

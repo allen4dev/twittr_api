@@ -32,6 +32,10 @@ Route::prefix('me')->group(function () {
   Route::get('/notifications/{notification}', 'NotificationsController@show')
     ->middleware('auth:api')
     ->name('notifications.show');
+
+  Route::delete('/notifications/{notification}', 'NotificationsController@destroy')
+    ->middleware('auth:api')
+    ->name('notifications.read');
 });
 
 Route::prefix('users')->group(function () {

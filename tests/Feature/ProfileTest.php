@@ -241,7 +241,33 @@ class ProfileTest extends TestCase
                     'type' => 'notifications',
                     'id'   => $notification->id,
                 ]]
-            ]);
+            ])
+            ->assertStatus(200);
+    }
+
+    /** @test */
+    public function a_user_can_mark_a_notification_as_readed()
+    {
+        $token = $this->signin();
+        
+        $user2 = create(User::class);
+        $tweet = create(Tweet::class, [ 'user_id' => $user2->id ]);
+
+        $this->followUser($user2, $token);
+        $this->retweet($tweet, $token);
+
+        auth()->logout();
+
+        $this->signin($user2);
+
+        $this->assertCount(2, $user2->unreadNotifications);
+
+        $notification = $user2->unreadNotifications()->first();
+
+        $this->json('DELETE', "/api/me/notifications/{$notification->id}")
+            ->assertStatus(204);
+
+        $this->assertCount(1, $user2->fresh()->unreadNotifications);
     }
 
     public function register()
@@ -265,5 +291,12 @@ class ProfileTest extends TestCase
         $headers = [ 'Authorization' => 'Bearer ' . $token ];
 
         return $this->json('POST', $user->path() . '/follow', [] , $headers);
+    }
+
+    public function retweet($tweet, $token)
+    {
+        $headers = [ 'Authorization' => 'Bearer ' . $token ];
+
+        return $this->json('POST', $tweet->path() . '/retweet', [], $headers);
     }
 }
