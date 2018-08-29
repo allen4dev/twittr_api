@@ -222,30 +222,27 @@ class ProfileTest extends TestCase
     }
 
     /** @test */
-    // public function a_user_can_fetch_all_of_his_notifications()
-    // {
-    //     $this->withoutExceptionHandling();
-    //     // Given we have an authenticated user1
-    //     $token = $this->signin();
-    //     // and a user2 who is followed by the user1
-    //     $user2 = create(User::class);
+    public function a_user_can_fetch_his_unread_notifications()
+    {
+        $token = $this->signin();
+        $user2 = create(User::class);
 
-    //     $this->followUser($user2, $token);
+        $this->followUser($user2, $token);
 
-    //     auth()->logout();
+        auth()->logout();
 
-    //     $this->signin($user2);
+        $this->signin($user2);
 
-    //     // When the user2 makes a GET request to /me/notifications
-    //     $this->json('GET', '/api/me/notifications')
-    //     // Then he should receive a notification resouce
-    //     // with the type notifications
-    //     // and the id of 1 under a data object
-    //         ->assertJson([[
-    //             'type' => 'notifications',
-    //             'id'   => '1',
-    //         ]]);
-    // }
+        $notification = $user2->unreadNotifications()->first();
+
+        $this->json('GET', '/api/me/notifications')
+            ->assertJson([
+                'data' => [[
+                    'type' => 'notifications',
+                    'id'   => $notification->id,
+                ]]
+            ]);
+    }
 
     public function register()
     {

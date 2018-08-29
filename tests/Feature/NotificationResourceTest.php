@@ -48,7 +48,6 @@ class NotificationResourceTest extends TestCase
     /** @test */
     public function it_should_contain_a_relationships_object_containing_a_user_resource_identifier_under_the_data_object()
     {
-        $this->withoutExceptionHandling();
         $this->signin();
 
         $user2 = create(User::class);

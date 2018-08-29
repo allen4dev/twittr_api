@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
+use App\Http\Resources\NotificationResource;
+
 class NotificationCollection extends ResourceCollection
 {
     /**
@@ -15,13 +17,7 @@ class NotificationCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            // 'type' =>
-            // 'id'
-            // 'type'
-            // 'notifiable'
-            // 'data'
-            // 'created_at'
-            // 'updated_at'
+            'data' => NotificationResource::collection($this->collection),
         ];
     }
 }
