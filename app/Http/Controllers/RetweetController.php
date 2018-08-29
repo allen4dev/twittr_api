@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Notifications\TweetWasRetweeted;
+use App\Notifications\Retweet;
 
 use App\Http\Resources\TweetResource;
 
@@ -16,7 +16,7 @@ class RetweetController extends Controller
     {
         auth()->user()->retweets()->create([ 'tweet_id' => $tweet->id ]);
 
-        $tweet->user->notify(new TweetWasRetweeted($tweet));
+        $tweet->user->notify(new Retweet($tweet));
 
         return new TweetResource($tweet);
     }

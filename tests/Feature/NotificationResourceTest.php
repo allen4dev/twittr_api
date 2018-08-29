@@ -70,6 +70,37 @@ class NotificationResourceTest extends TestCase
             ]);
     }
 
+    /** @test */
+    public function a_collection_should_contain_a_list_of_notification_resources_under_a_data_object()
+    {
+        $this->signin();
+
+        $user2 = create(User::class);
+
+        $this->followUser($user2);
+
+        auth()->logout();
+        $this->signin($user2);
+
+        $notification = $user2->notifications()->first();
+
+        $this->json('GET', "/api/me/notifications/unread")
+            ->assertJson([
+                'data' => [[
+                    'type' => 'notifications',
+                    'id'   => $notification->id,
+                    'attributes' => [
+                        'message' => $notification->data['message'],
+                        'additional_information' => $notification->data['additional'],
+                        'subject' => 'FollowedUser',
+                        'created_at' => (string) $notification->created_at,
+                        'updated_at' => (string) $notification->updated_at,
+                        'read_for_humans' => $notification->created_at->diffForHumans(),
+                    ]
+                ]]
+            ]);
+    }
+
     public function followUser($user)
     {
         return $this->json('POST', $user->path() . '/follow');

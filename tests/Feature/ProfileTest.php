@@ -235,7 +235,7 @@ class ProfileTest extends TestCase
 
         $notification = $user2->unreadNotifications()->first();
 
-        $this->json('GET', '/api/me/notifications')
+        $this->json('GET', '/api/me/notifications/unread')
             ->assertJson([
                 'data' => [[
                     'type' => 'notifications',

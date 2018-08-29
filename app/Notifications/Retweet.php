@@ -9,7 +9,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 
 use App\Tweet;
 
-class TweetWasRetweeted extends Notification
+class Retweet extends Notification
 {
     use Queueable;
 
