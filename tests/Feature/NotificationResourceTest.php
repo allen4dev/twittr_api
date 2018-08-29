@@ -45,6 +45,32 @@ class NotificationResourceTest extends TestCase
             ]);
     }
 
+    /** @test */
+    public function it_should_contain_a_relationships_object_containing_a_user_resource_identifier_under_the_data_object()
+    {
+        $this->withoutExceptionHandling();
+        $this->signin();
+
+        $user2 = create(User::class);
+
+        $this->followUser($user2);
+
+        auth()->logout();
+        $this->signin($user2);
+
+        $notification = $user2->notifications()->first();
+
+        $this->json('GET', "/api/me/notifications/{$notification->id}")
+            ->assertJson([
+                'data' => [
+                    'relationships' => [
+                        'type' => 'users',
+                        'id'   => $notification->notifiable_id,
+                    ]
+                ]
+            ]);
+    }
+
     public function followUser($user)
     {
         return $this->json('POST', $user->path() . '/follow');
