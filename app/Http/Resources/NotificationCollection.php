@@ -20,4 +20,11 @@ class NotificationCollection extends ResourceCollection
             'data' => NotificationResource::collection($this->collection),
         ];
     }
+
+    public function with($request)
+    {
+        return [
+            'links' => [ 'self' => route('notifications.unread') ],
+        ];
+    }
 }

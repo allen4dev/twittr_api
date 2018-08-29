@@ -101,6 +101,17 @@ class NotificationResourceTest extends TestCase
             ]);
     }
 
+    /** @test */
+    public function a_collection_should_contain_details_about_the_pagination_under_a_links_object_at_the_same_level_of_the_data_object()
+    {
+        $this->signin();
+
+        $this->json('GET', "/api/me/notifications/unread")
+            ->assertJson([
+                'links' => [ 'self' => route('notifications.unread') ]
+            ]);
+    }
+
     public function followUser($user)
     {
         return $this->json('POST', $user->path() . '/follow');
