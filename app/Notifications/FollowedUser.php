@@ -7,7 +7,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class UserFollowed extends Notification
+class FollowedUser extends Notification
 {
     use Queueable;
 
@@ -58,7 +58,7 @@ class UserFollowed extends Notification
         
         return [
             'message' => "{$user->username} has followed you.",
-            'subject' => $user->username
+            'additional' => $user->username
         ];
     }
 }

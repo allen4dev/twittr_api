@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Notifications\UserFollowed;
+use App\Notifications\FollowedUser;
 
 use App\Http\Resources\UserResource;
 
@@ -16,7 +16,7 @@ class FollowUserController extends Controller
     {
         $user->follow();
         
-        $user->notify(new UserFollowed);
+        $user->notify(new FollowedUser);
     
         return new UserResource($user);
     }

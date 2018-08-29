@@ -62,7 +62,7 @@ class TweetWasRetweeted extends Notification
 
         return [
             'message' => "{$user->username} has retweeted your tweet.",
-            'subject' => $this->tweet->body,
+            'additional' => $this->tweet->body,
         ];
     }
 }
