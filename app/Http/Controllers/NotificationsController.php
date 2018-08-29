@@ -31,4 +31,11 @@ class NotificationsController extends Controller
 
         return response()->json()->setStatusCode(204);
     }
+
+    public function readAll()
+    {
+        auth()->user()->unreadNotifications()->update([ 'read_at' => now() ]);
+
+        return response()->json()->setStatusCode(204);
+    }
 }

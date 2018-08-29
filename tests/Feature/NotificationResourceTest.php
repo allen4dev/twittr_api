@@ -137,7 +137,7 @@ class NotificationResourceTest extends TestCase
 
         $notification = $user2->notifications()->first();
 
-        $this->json('GET', "/api/me/notifications/unread")
+        $this->json('GET', "/api/me/notifications")
             ->assertJson([
                 'data' => [[
                     'type' => 'notifications',
@@ -159,7 +159,7 @@ class NotificationResourceTest extends TestCase
     {
         $this->signin();
 
-        $this->json('GET', "/api/me/notifications/unread")
+        $this->json('GET', "/api/me/notifications")
             ->assertJson([
                 'links' => [ 'self' => route('notifications.unread') ]
             ]);

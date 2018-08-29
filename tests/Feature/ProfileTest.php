@@ -235,7 +235,7 @@ class ProfileTest extends TestCase
 
         $notification = $user2->unreadNotifications()->first();
 
-        $this->json('GET', '/api/me/notifications/unread')
+        $this->json('GET', '/api/me/notifications')
             ->assertJson([
                 'data' => [[
                     'type' => 'notifications',
@@ -249,7 +249,7 @@ class ProfileTest extends TestCase
     public function a_user_can_mark_a_notification_as_readed()
     {
         $token = $this->signin();
-        
+
         $user2 = create(User::class);
         $tweet = create(Tweet::class, [ 'user_id' => $user2->id ]);
 
@@ -268,6 +268,29 @@ class ProfileTest extends TestCase
             ->assertStatus(204);
 
         $this->assertCount(1, $user2->fresh()->unreadNotifications);
+    }
+
+    /** @test */
+    public function a_user_can_mark_all_of_his_notification_as_readed()
+    {
+        $token = $this->signin();
+        
+        $user2 = create(User::class);
+        $tweet = create(Tweet::class, [ 'user_id' => $user2->id ]);
+
+        $this->followUser($user2, $token);
+        $this->retweet($tweet, $token);
+
+        auth()->logout();
+
+        $this->signin($user2);
+
+        $this->assertCount(2, $user2->unreadNotifications);
+
+        $this->json('DELETE', '/api/me/notifications')
+            ->assertStatus(204);
+
+        $this->assertCount(0, $user2->fresh()->unreadNotifications);
     }
 
     public function register()

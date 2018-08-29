@@ -25,9 +25,14 @@ Route::prefix('me')->group(function () {
 
   Route::get('/photos', 'UserPhotosController@index')->middleware('auth:api');
 
-  Route::get('/notifications/unread', 'NotificationsController@index')
+  Route::get('/notifications', 'NotificationsController@index')
     ->middleware('auth:api')
     ->name('notifications.unread');
+
+  // ! If more custom methods would be added move to his own controller
+  Route::delete('/notifications', 'NotificationsController@readAll')
+    ->middleware('auth:api')
+    ->name('notifications.read.all');
   
   Route::get('/notifications/{notification}', 'NotificationsController@show')
     ->middleware('auth:api')
