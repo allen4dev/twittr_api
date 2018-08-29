@@ -74,7 +74,7 @@ class PhotoResourceTest extends TestCase
                         // more info
                     ],
                     'links' => [
-                        'related' => route('users.show', ['user' => $user->id]),
+                        'self' => route('users.show', ['user' => $user->id]),
                     ]
                 ],
             ]);

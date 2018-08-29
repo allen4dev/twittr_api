@@ -26,7 +26,7 @@ class ReplyResource extends JsonResource
                 'body' => $this->body,
             ],
             'links' => [
-                'related' => route('replies.show', [ 'reply' => $this->id ])
+                'self' => route('replies.show', [ 'reply' => $this->id ])
             ],
             'relationships' => new ReplyRelationshipsResource($this->tweet),
         ];

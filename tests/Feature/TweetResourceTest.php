@@ -40,7 +40,7 @@ class TweetResourceTest extends TestCase
             ->assertJson([
                 'data' => [
                     'links' => [
-                        'related' => route('tweets.show', [ 'id' => $tweet->id ])
+                        'self' => route('tweets.show', [ 'id' => $tweet->id ])
                     ]
                 ]
             ]);

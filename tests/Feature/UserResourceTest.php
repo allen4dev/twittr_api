@@ -47,7 +47,7 @@ class UserResourceTest extends TestCase
             ->assertJson([
                 'data' => [
                     'links' => [
-                        'related' => route('users.show', ['user' => $user->id])
+                        'self' => route('users.show', ['user' => $user->id])
                     ]
                 ]
             ]);

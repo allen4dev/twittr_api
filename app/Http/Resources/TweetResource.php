@@ -24,7 +24,7 @@ class TweetResource extends JsonResource
                 'body' => $this->body,
             ],
             'links' => [
-                'related' => route('tweets.show', [ 'id' => $this->id ]),
+                'self' => route('tweets.show', [ 'id' => $this->id ]),
             ],
             'relationships' => new TweetRelationshipResource($this),
         ];

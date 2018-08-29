@@ -26,7 +26,7 @@ class UserResource extends JsonResource
                 'contact_info'  => $this->contact_info,
             ],
             'links' => [
-                'related' => route('users.show', ['user' => $this->id]),
+                'self' => route('users.show', ['user' => $this->id]),
             ]
         ];
     }

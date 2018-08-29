@@ -71,6 +71,30 @@ class NotificationResourceTest extends TestCase
     }
 
     /** @test */
+    public function it_should_contain_a_links_object_with_a_self_url_link_under_a_data_object()
+    {
+        $this->signin();
+
+        $user2 = create(User::class);
+
+        $this->followUser($user2);
+
+        auth()->logout();
+        $this->signin($user2);
+
+        $notification = $user2->notifications()->first();
+
+        $this->json('GET', "/api/me/notifications/{$notification->id}")
+            ->assertJson([
+                'data' => [
+                    'links' => [
+                        'self' => route('notifications.show', [ 'notification' => $notification->id])
+                    ]
+                ]
+            ]);
+    }
+
+    /** @test */
     public function a_collection_should_contain_a_list_of_notification_resources_under_a_data_object()
     {
         $this->signin();

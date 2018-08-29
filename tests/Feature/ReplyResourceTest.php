@@ -41,7 +41,7 @@ class ReplyResourceTest extends TestCase
             ->assertJson([
                 'data' => [
                     'links' => [
-                        'related' => route('replies.show', [ 'reply' => $reply->id ])
+                        'self' => route('replies.show', [ 'reply' => $reply->id ])
                     ]
                 ]
             ]);

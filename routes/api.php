@@ -25,8 +25,13 @@ Route::prefix('me')->group(function () {
 
   Route::get('/photos', 'UserPhotosController@index')->middleware('auth:api');
 
-  Route::get('/notifications/unread', 'NotificationsController@index')->middleware('auth:api')->name('notifications.unread');
-  Route::get('/notifications/{notification}', 'NotificationsController@show')->middleware('auth:api');
+  Route::get('/notifications/unread', 'NotificationsController@index')
+    ->middleware('auth:api')
+    ->name('notifications.unread');
+  
+  Route::get('/notifications/{notification}', 'NotificationsController@show')
+    ->middleware('auth:api')
+    ->name('notifications.show');
 });
 
 Route::prefix('users')->group(function () {

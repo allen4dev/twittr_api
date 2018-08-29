@@ -28,6 +28,9 @@ class NotificationResource extends JsonResource
             'relationships' => [
                 'type' => 'users',
                 'id'   => $this->notifiable_id,
+            ],
+            'links' => [
+                'self' => route('notifications.show', [ 'notification' => $this->id ]),
             ]
         ];
     }
