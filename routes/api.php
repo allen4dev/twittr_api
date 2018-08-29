@@ -24,6 +24,9 @@ Route::prefix('me')->group(function () {
   Route::get('/timeline', 'TimelineController@index')->middleware('auth:api');
 
   Route::get('/photos', 'UserPhotosController@index')->middleware('auth:api');
+
+  Route::get('/notifications', 'NotificationsController@index')->middleware('auth:api');
+  Route::get('/notifications/{notification}', 'NotificationsController@show')->middleware('auth:api');
 });
 
 Route::prefix('users')->group(function () {

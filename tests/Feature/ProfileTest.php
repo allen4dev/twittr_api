@@ -197,6 +197,56 @@ class ProfileTest extends TestCase
             ->assertStatus(200);
     }
 
+    /** @test */
+    public function a_user_can_fetch_a_single_notification()
+    {
+        $token = $this->signin();
+
+        $user2 = create(User::class);
+        $this->followUser($user2, $token);
+
+        auth()->logout();
+
+        $this->signin($user2);
+
+        $notificationId = $user2->notifications()->first()->id;
+
+        $this->json('GET', "/api/me/notifications/{$notificationId}")
+            ->assertJson([
+                'data' => [
+                    'type' => 'notifications',
+                    'id'   => $notificationId,
+                ]
+            ])
+            ->assertStatus(200);
+    }
+
+    /** @test */
+    // public function a_user_can_fetch_all_of_his_notifications()
+    // {
+    //     $this->withoutExceptionHandling();
+    //     // Given we have an authenticated user1
+    //     $token = $this->signin();
+    //     // and a user2 who is followed by the user1
+    //     $user2 = create(User::class);
+
+    //     $this->followUser($user2, $token);
+
+    //     auth()->logout();
+
+    //     $this->signin($user2);
+
+    //     // When the user2 makes a GET request to /me/notifications
+    //     $this->json('GET', '/api/me/notifications')
+    //     // Then he should receive a notification resouce
+    //     // with the type notifications
+    //     // and the id of 1 under a data object
+    //         ->assertJson([[
+    //             'type' => 'notifications',
+    //             'id'   => '1',
+    //         ]]);
+    // }
+
     public function register()
     {
         $response = $this->post('/api/auth/register', [
