@@ -13,7 +13,7 @@ class NotificationsController extends Controller
     {
         $notifications = auth()->user()->notifications;
 
-        return new NotificationCollection($notifications);
+        return new NotificationCollection($notifications->paginate());
     }
 
     public function show($id)

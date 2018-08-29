@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 use App\Http\Resources\NotificationResource;
+use App\Http\Resources\UserResource;
 
 class NotificationCollection extends ResourceCollection
 {
@@ -25,6 +26,7 @@ class NotificationCollection extends ResourceCollection
     {
         return [
             'links' => [ 'self' => route('notifications.unread') ],
+            'included' => [ new UserResource(auth()->user()) ],
         ];
     }
 }
