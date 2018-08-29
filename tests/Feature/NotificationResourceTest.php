@@ -95,6 +95,35 @@ class NotificationResourceTest extends TestCase
     }
 
     /** @test */
+    public function it_should_contain_the_related_notification_user_as_a_user_resource_under_a_included_object_at_the_same_level_of_data()
+    {
+        $this->withoutExceptionHandling();
+        $this->signin();
+
+        $user2 = create(User::class);
+
+        $this->followUser($user2);
+
+        auth()->logout();
+        $this->signin($user2);
+
+        $notification = $user2->notifications()->first();
+
+        $this->json('GET', "/api/me/notifications/{$notification->id}")
+            ->assertJson([
+                'included' => [[
+                    'type' => 'users',
+                    'id'   => (string) $user2->id,
+                    'attributes' => [
+                        'username' => $user2->username,
+                        'email' => $user2->email,
+                        // more user fields
+                    ]
+                ]]
+            ]);
+    }
+
+    /** @test */
     public function a_collection_should_contain_a_list_of_notification_resources_under_a_data_object()
     {
         $this->signin();

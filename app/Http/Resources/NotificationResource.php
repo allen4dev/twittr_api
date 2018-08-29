@@ -34,4 +34,13 @@ class NotificationResource extends JsonResource
             ]
         ];
     }
+
+    public function with($request)
+    {
+        return [
+            'included' => [
+                new UserResource(auth()->user()),
+            ],
+        ];
+    }
 }
