@@ -95,16 +95,58 @@ class TweetResourceTest extends TestCase
             ]);
     }
 
+    // /** @test */
+    // public function it_should_contain_a_user_resouce_and_a_replies_collection_under_a_included_object_at_the_same_level_of_the_data_object()
+    // {
+    //     $this->withoutExceptionHandling();
+
+    //     $user  = create(User::class);
+    //     $tweet = create(Tweet::class, [ 'user_id' => $user->id ]);
+
+    //     $reply1 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
+    //     $reply2 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
+
+    //     $this->json('GET', $tweet->path() . '?include=user,replies')
+    //         ->assertJson([
+    //             'included' => [
+    //                 [
+    //                     'type' => 'users',
+    //                     'id'   => (string) $user->id,
+    //                     'attributes' => [
+    //                         'username' => $user->username,
+    //                         'email' => $user->email,
+    //                         // more user fields
+    //                     ]
+    //                 ],
+    //                 [
+    //                     'type' => 'replies',
+    //                     'id'   => (string) $reply1->id,
+    //                     'attributes' => [
+    //                         'body' => $reply1->body,
+    //                         // more fields
+    //                     ]
+    //                 ],
+    //                 [
+    //                     'type' => 'replies',
+    //                     'id'   => (string) $reply2->id,
+    //                     'attributes' => [
+    //                         'body' => $reply2->body,
+    //                         // more fields
+    //                     ]
+    //                 ],
+    //             ]  
+    //         ]);
+    // }
+
+
+
     /** @test */
-    public function it_should_contain_a_user_resouce_and_a_replies_collection_under_a_included_object_at_the_same_level_of_the_data_object()
+    public function it_should_also_contain_the_author_if_the_request_sends_a_include_query_parameter_with_value_user()
     {
         $user  = create(User::class);
         $tweet = create(Tweet::class, [ 'user_id' => $user->id ]);
 
-        $reply1 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
-        $reply2 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
-
-        $this->json('GET', $tweet->path())
+        $this->json('GET', $tweet->path() . '?include=user')
             ->assertJson([
                 'included' => [
                     [
@@ -116,25 +158,12 @@ class TweetResourceTest extends TestCase
                             // more user fields
                         ]
                     ],
-                    [
-                        'type' => 'replies',
-                        'id'   => (string) $reply1->id,
-                        'attributes' => [
-                            'body' => $reply1->body,
-                            // more fields
-                        ]
-                    ],
-                    [
-                        'type' => 'replies',
-                        'id'   => (string) $reply2->id,
-                        'attributes' => [
-                            'body' => $reply2->body,
-                            // more fields
-                        ]
-                    ],
                 ]  
             ]);
     }
+
+
+
 
     /** @test */
     public function a_collection_should_contain_a_list_of_tweet_resources_under_a_data_object()

@@ -32,10 +32,15 @@ class TweetResource extends JsonResource
 
     public function with($request)
     {
-        $user = collect([ $this->resource->user ]);
-        $replies = $this->resource->replies;
-
-        $includes = $user->merge($replies)->unique();
+        if (! $request->include) return [];
+        
+        if ($this->resource->relationLoaded('user'))
+        {
+            $user = collect([ $this->resource->user ]);
+        }
+        
+        // $includes = $user->merge($replies)->unique();
+        $includes = $user;
 
         return [
             'included' => $this->withIncluded($includes),

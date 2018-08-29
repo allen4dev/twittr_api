@@ -23,6 +23,10 @@ class TweetController extends Controller
 
     public function show(Tweet $tweet)
     {
+        if (request('include')) {
+            $tweet->load(request('include'));
+        }
+
         return new TweetResource($tweet);
     }
 
