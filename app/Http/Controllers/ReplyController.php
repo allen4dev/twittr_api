@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Notifications\TweetReplied;
+
 use App\Http\Resources\ReplyResource;
 use App\Http\Resources\ReplyCollection;
 
@@ -29,6 +31,8 @@ class ReplyController extends Controller
         request()->validate([ 'body' => 'required' ]);
 
         $reply = $tweet->addReply(request('body'));
+
+        $tweet->user->notify(new TweetReplied($tweet));
 
         return new ReplyResource($reply);
     }

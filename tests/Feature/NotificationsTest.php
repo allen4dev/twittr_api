@@ -38,6 +38,20 @@ class NotificationsTest extends TestCase
         $this->assertCount(1, $user->unreadNotifications); 
     }
 
+    /** @test */
+    public function a_user_is_notified_after_someone_replies_his_tweet()
+    {
+        $this->signin();
+
+        $user  = create(User::class);
+        $tweet = create(Tweet::class, [ 'user_id' => $user->id ]);
+
+        $data = [ 'body' => 'Tweet reply' ];
+        $this->json('POST', $tweet->path() . '/replies', $data);
+
+        $this->assertCount(1, $user->unreadNotifications);
+    }
+
     public function followUser($user)
     {
         return $this->json('POST', $user->path() . '/follow');

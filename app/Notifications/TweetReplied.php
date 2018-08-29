@@ -7,20 +7,18 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-use App\Tweet;
-
-class TweetWasRetweeted extends Notification
+class TweetReplied extends Notification
 {
     use Queueable;
 
-    public $tweet;
+    protected $tweet;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Tweet $tweet)
+    public function __construct($tweet)
     {
         $this->tweet = $tweet;
     }
@@ -61,8 +59,8 @@ class TweetWasRetweeted extends Notification
         $user = auth()->user();
 
         return [
-            'message' => "{$user->username} has retweeted your tweet.",
-            'subject' => $this->tweet->body,
+            'message' => "{$user->username} has retweeted your tweet",
+            'subject' => $this->tweet->body
         ];
     }
 }
