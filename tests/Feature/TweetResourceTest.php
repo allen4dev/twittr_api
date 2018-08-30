@@ -162,7 +162,38 @@ class TweetResourceTest extends TestCase
             ]);
     }
 
+    /** @test */
+    public function it_should_also_contain_the_tweet_replies_if_the_request_sends_a_include_query_parameter_with_value_replies()
+    {
+        $this->withoutExceptionHandling();
+        
+        $tweet = create(Tweet::class);
 
+        $reply1 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
+        $reply2 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
+
+        $this->json('GET', $tweet->path() . '?include=replies')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'replies',
+                        'id'   => (string) $reply1->id,
+                        'attributes' => [
+                            'body' => $reply1->body,
+                            // more user fields
+                        ]
+                    ],
+                    [
+                        'type' => 'replies',
+                        'id'   => (string) $reply2->id,
+                        'attributes' => [
+                            'body' => $reply2->body,
+                            // more user fields
+                        ]
+                    ],
+                ]  
+            ]);
+    }
 
 
     /** @test */
