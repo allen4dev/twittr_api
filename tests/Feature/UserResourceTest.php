@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Resources\UserIdentifierResource;
 
 use App\User;
+use App\Tweet;
 
 class UserResourceTest extends TestCase
 {
@@ -34,6 +35,35 @@ class UserResourceTest extends TestCase
                         'profile_image' => $user->profile_image,
                         'contact_info' => $user->contact_info,
                     ]
+                ]
+            ]);
+    }
+
+    /** @test */
+    public function it_should_contain_a_included_object_with_the_user_tweets_as_tweet_resources_if_the_request_contains_a_include_query_parameter_with_value_tweets()
+    {
+        $user = create(User::class);
+
+        $tweet1 = create(Tweet::class, [ 'user_id' => $user->id ]);
+        $tweet2 = create(Tweet::class, [ 'user_id' => $user->id ]);
+
+        $this->json('GET', $user->path() . '?include=tweets')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'tweets',
+                        'id'   => (string) $tweet1->id,
+                        'attributes' => [
+                            'body' => $tweet1->body,
+                        ]
+                    ],
+                    [
+                        'type' => 'tweets',
+                        'id'   => (string) $tweet2->id,
+                        'attributes' => [
+                            'body' => $tweet2->body,
+                        ]
+                    ],
                 ]
             ]);
     }

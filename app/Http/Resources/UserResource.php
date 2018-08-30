@@ -4,6 +4,14 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use Illuminate\Support\Collection;
+
+use App\Http\Transformers\IncludeTransformer;
+
+use App\Http\Resources\TweetResource;
+
+use App\Tweet;
+
 class UserResource extends JsonResource
 {
     /**
@@ -29,5 +37,25 @@ class UserResource extends JsonResource
                 'self' => route('users.show', ['user' => $this->id]),
             ]
         ];
+    }
+
+    public function with($request)
+    {
+        if (! $request->include) return [];
+
+        $includes = IncludeTransformer::includeData($this->resource, $request->include);
+        
+        return [
+            'included' => $this->withIncluded($includes->unique()),
+        ];
+    }
+
+    public function withIncluded(Collection $included)
+    {
+        return $included->map(function ($include) {
+            if ($include instanceof Tweet) {
+                return new TweetResource($include);
+            }
+        });
     }
 }
