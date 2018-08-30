@@ -17,7 +17,10 @@ class NotificationResourceTest extends TestCase
     /** @test */
     public function it_should_contain_an_id_type_and_attributes_under_a_data_object()
     {
-        $this->signin();
+        $this->withoutExceptionHandling();
+
+        $user1 = create(User::class);
+        $this->signin($user1);
 
         $user2 = create(User::class);
 
@@ -35,8 +38,12 @@ class NotificationResourceTest extends TestCase
                     'id'   => $notification->id,
                     'attributes' => [
                         'message' => $notification->data['message'],
-                        'additional_information' => $notification->data['additional'],
-                        'subject' => 'FollowedUser',
+                        'additional' => [
+                            'content' => $notification->data['additional']['content'],
+                            'sender_avatar'   => $user1->avatar_url,
+                            'sender_username' => $user1->username,
+                        ],
+                        'action' => 'FollowedUser',
                         'created_at' => (string) $notification->created_at,
                         'updated_at' => (string) $notification->updated_at,
                         'read_for_humans' => $notification->created_at->diffForHumans(),
@@ -95,38 +102,10 @@ class NotificationResourceTest extends TestCase
     }
 
     /** @test */
-    public function it_should_contain_the_related_notification_user_as_a_user_resource_under_a_included_object_at_the_same_level_of_data()
-    {
-        $this->withoutExceptionHandling();
-        $this->signin();
-
-        $user2 = create(User::class);
-
-        $this->followUser($user2);
-
-        auth()->logout();
-        $this->signin($user2);
-
-        $notification = $user2->notifications()->first();
-
-        $this->json('GET', "/api/me/notifications/{$notification->id}")
-            ->assertJson([
-                'included' => [[
-                    'type' => 'users',
-                    'id'   => (string) $user2->id,
-                    'attributes' => [
-                        'username' => $user2->username,
-                        'email' => $user2->email,
-                        // more user fields
-                    ]
-                ]]
-            ]);
-    }
-
-    /** @test */
     public function a_collection_should_contain_a_list_of_notification_resources_under_a_data_object()
     {
-        $this->signin();
+        $user1 = create(User::class);
+        $this->signin($user1);
 
         $user2 = create(User::class);
 
@@ -144,8 +123,12 @@ class NotificationResourceTest extends TestCase
                     'id'   => $notification->id,
                     'attributes' => [
                         'message' => $notification->data['message'],
-                        'additional_information' => $notification->data['additional'],
-                        'subject' => 'FollowedUser',
+                        'additional' => [
+                            'content' => $notification->data['additional']['content'],
+                            'sender_avatar'   => $user1->avatar_url,
+                            'sender_username' => $user1->username,
+                        ],
+                        'action' => 'FollowedUser',
                         'created_at' => (string) $notification->created_at,
                         'updated_at' => (string) $notification->updated_at,
                         'read_for_humans' => $notification->created_at->diffForHumans(),

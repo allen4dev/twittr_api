@@ -58,7 +58,11 @@ class FollowedUser extends Notification
         
         return [
             'message' => "{$user->username} has followed you.",
-            'additional' => $user->username
+            'additional' => [
+                'content' => $user->username,
+                'sender_avatar'   => $user->avatar_url,
+                'sender_username' => $user->username,
+            ]
         ];
     }
 }

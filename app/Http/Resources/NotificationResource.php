@@ -13,14 +13,18 @@ class NotificationResource extends JsonResource
      * @return array
      */
     public function toArray($request)
-    {
+    {        
         return [
             'type' => 'notifications',
             'id'   => $this->id,
             'attributes' => [
                 'message' => $this->data['message'],
-                'additional_information' => $this->data['additional'],
-                'subject' => 'FollowedUser',
+                'additional' => [
+                    'content' => $this->data['additional']['content'],
+                    'sender_avatar' => $this->data['additional']['sender_avatar'],
+                    'sender_username' => $this->data['additional']['sender_username'],
+                ],
+                'action' => explode('\\', $this->resource->type)[2],
                 'created_at' => (string) $this->created_at,
                 'updated_at' => (string) $this->updated_at,
                 'read_for_humans' => $this->created_at->diffForHumans(),
@@ -32,15 +36,6 @@ class NotificationResource extends JsonResource
             'links' => [
                 'self' => route('notifications.show', [ 'notification' => $this->id ]),
             ]
-        ];
-    }
-
-    public function with($request)
-    {
-        return [
-            'included' => [
-                new UserResource(auth()->user()),
-            ],
         ];
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Http\Transformers\IncludeTransformer;
+
 use App\Http\Resources\NotificationCollection;
 use App\Http\Resources\NotificationResource;
 
