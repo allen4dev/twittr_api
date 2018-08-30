@@ -26,12 +26,12 @@ class TweetCollection extends ResourceCollection
 
     public function with($request)
     {
+        if (! $request->include) return [];
+        
         $users = $this->collection->map(function ($tweet) {
             return $tweet->user;
         });
 
-        // Merge more collections to include
-        // Ex: $users->merge($comments)->unique();
         $includes = $users->unique();
 
         return [

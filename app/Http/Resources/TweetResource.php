@@ -5,6 +5,8 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
 
+use App\Http\Transformers\IncludeTransformer;
+
 use App\Http\Resources\TweetRelationshipResource;
 
 use App\Http\Resources\ReplyResource;
@@ -34,21 +36,7 @@ class TweetResource extends JsonResource
     {
         if (! $request->include) return [];
 
-        $includes = collect();
-        
-        // ! Refactor
-        if ($this->resource->relationLoaded('user'))
-        {
-            $user = $this->resource->user;
-            
-            $includes->push($user);
-        }
-
-        if ($this->resource->relationLoaded('replies'))
-        {
-            $replies = $this->resource->replies;
-            $includes = $includes->merge($replies);
-        }
+        $includes = IncludeTransformer::includeData($this->resource, $request->include);
         
         return [
             'included' => $this->withIncluded($includes->unique()),

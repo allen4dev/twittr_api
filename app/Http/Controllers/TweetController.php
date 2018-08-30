@@ -8,6 +8,8 @@ use Illuminate\Http\Response;
 use App\Http\Resources\TweetResource;
 use App\Http\Resources\TweetCollection;
 
+use App\Http\Transformers\IncludeTransformer;
+
 use App\Http\Responses;
 
 use App\Tweet;
@@ -23,12 +25,7 @@ class TweetController extends Controller
 
     public function show(Tweet $tweet)
     {
-        // ! Refactor
-        if (request('include')) {
-            foreach(explode(',', request('include')) as $relationship) {
-                $tweet->load($relationship);
-            }
-        }
+        IncludeTransformer::loadRelationships($tweet, request('include'));
 
         return new TweetResource($tweet);
     }
