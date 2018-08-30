@@ -166,7 +166,7 @@ class TweetResourceTest extends TestCase
     public function it_should_also_contain_the_tweet_replies_if_the_request_sends_a_include_query_parameter_with_value_replies()
     {
         $this->withoutExceptionHandling();
-        
+
         $tweet = create(Tweet::class);
 
         $reply1 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
@@ -195,6 +195,49 @@ class TweetResourceTest extends TestCase
             ]);
     }
 
+    /** @test */
+    public function it_should_also_contain_the_user_and_the_tweet_replies_if_the_request_sends_a_include_query_parameter_with_a_comma_separeted_value_of_user_and_replies()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = create(User::class);
+
+        $tweet = create(Tweet::class, [ 'user_id' => $user->id ]);
+
+        $reply1 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
+        $reply2 = create(Reply::class, [ 'tweet_id' => $tweet->id ]);
+
+        $this->json('GET', $tweet->path() . '?include=user,replies')
+            ->assertJson([
+                'included' => [
+                    [
+                        'type' => 'users',
+                        'id'   => (string) $user->id,
+                        'attributes' => [
+                            'username' => $user->username,
+                            'email'    => $user->email,
+                            // more user fields
+                        ]
+                    ],
+                    [
+                        'type' => 'replies',
+                        'id'   => (string) $reply1->id,
+                        'attributes' => [
+                            'body' => $reply1->body,
+                            // more user fields
+                        ]
+                    ],
+                    [
+                        'type' => 'replies',
+                        'id'   => (string) $reply2->id,
+                        'attributes' => [
+                            'body' => $reply2->body,
+                            // more user fields
+                        ]
+                    ],
+                ]  
+            ]);
+    }
 
     /** @test */
     public function a_collection_should_contain_a_list_of_tweet_resources_under_a_data_object()

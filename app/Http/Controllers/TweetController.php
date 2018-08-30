@@ -23,8 +23,11 @@ class TweetController extends Controller
 
     public function show(Tweet $tweet)
     {
+        // ! Refactor
         if (request('include')) {
-            $tweet->load(request('include'));
+            foreach(explode(',', request('include')) as $relationship) {
+                $tweet->load($relationship);
+            }
         }
 
         return new TweetResource($tweet);
