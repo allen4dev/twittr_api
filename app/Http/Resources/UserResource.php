@@ -32,6 +32,9 @@ class UserResource extends JsonResource
                 'fullname'      => $this->fullname,
                 'profile_image' => $this->profile_image,
                 'contact_info'  => $this->contact_info,
+                'tweets_count'  => $this->tweets_count,
+                'followers_count'   => $this->followers_count,
+                'followings_count'  => $this->followings_count,
             ],
             'links' => [
                 'self' => route('users.show', ['user' => $this->id]),

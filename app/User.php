@@ -30,6 +30,21 @@ class User extends Authenticatable implements JWTSubject
         'password', 'remember_token',
     ];
 
+    public function getTweetsCountAttribute()
+    {
+        return $this->tweets()->count();
+    }
+
+    public function getFollowersCountAttribute()
+    {
+        return $this->followers()->count();
+    }
+
+    public function getFollowingsCountAttribute()
+    {
+        return $this->followings()->count();
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

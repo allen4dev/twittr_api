@@ -84,6 +84,44 @@ class UserResourceTest extends TestCase
     }
 
     /** @test */
+    public function it_should_contain_the_followers_followings_and_tweets_count_of_a_user_under_the_attributes_object()
+    {
+        $this->signin();
+        
+        create(Tweet::class, [ 'user_id' => auth()->id() ], 2);
+
+        create(User::class, [], 3);
+
+        $data = [
+            [
+                'follower_id' => (string) auth()->id(),
+                'following_id' => '2',
+            ],
+            [
+                'follower_id' => (string) auth()->id(),
+                'following_id' => '3',
+            ],
+            [
+                'follower_id' => '4',
+                'following_id' => (string) auth()->id(),
+            ],
+        ];
+
+        DB::table('followers')->insert($data);
+
+        $this->json('GET', auth()->user()->path())
+            ->assertJson([
+                'data' => [
+                    'attributes' => [
+                        'tweets_count' => 2,
+                        'followers_count' => 1,
+                        'followings_count' => 2,
+                    ]
+                ]
+            ]);
+    }
+
+    /** @test */
     public function a_collection_should_contain_a_list_of_user_resources_under_a_data_object()
     {
         $this->signin();
